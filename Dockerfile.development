@@ -1,0 +1,15 @@
+# syntax=docker/dockerfile:1
+
+FROM node:16 AS development
+
+WORKDIR /usr/src/caseservice
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build 
+
+EXPOSE 3000
