@@ -8,12 +8,13 @@ import { IDataServices } from '../generics/data.services.abstract';
 import { Publication, PublicationDocument } from './../../publication/publication.entity';
 import { User, UserDocument } from './../../users/users.entity';
 import { MongoGenericRepository } from './GR-mongo-generic-repository';
+import { UserRepository } from '../repositories/user.repository';
 
 @Injectable()
 export class MongoDataServices
   implements IDataServices, OnApplicationBootstrap
 {
-  users: MongoGenericRepository<User>;
+  users: UserRepository<User>;
   publications: MongoGenericRepository<Publication>;
   medias: MongoGenericRepository<Media>;
 
@@ -27,7 +28,7 @@ export class MongoDataServices
   ) {}
 
   onApplicationBootstrap() {
-    this.users = new MongoGenericRepository<User>(this.UserRepository);
+    this.users = new UserRepository<User | UserDocument>(this.UserRepository);
     this.publications = new MongoGenericRepository<Publication>(
       this.PublicationRepository,
       ['user'],

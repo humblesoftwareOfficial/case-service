@@ -4,8 +4,8 @@ import { Model } from 'mongoose';
 import { IGenericRepository } from '../generics/generic.repository.abstract';
 
 export class MongoGenericRepository<T> implements IGenericRepository<T> {
-  private _repository: Model<T>;
-  private _populateOnFind: string[];
+  public readonly _repository: Model<T>;
+  public readonly _populateOnFind: string[];
 
   constructor(repository: Model<T>, populateOnFind: string[] = []) {
     this._repository = repository;

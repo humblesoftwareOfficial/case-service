@@ -25,7 +25,7 @@ export class NewUserDto {
   @IsString()
   phone: string;
 
-  @IsOptional()
+
   @IsNotEmpty({ message: 'User password is required.' })
   password: string;
 

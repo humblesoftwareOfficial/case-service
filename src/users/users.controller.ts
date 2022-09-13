@@ -1,10 +1,12 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger/dist';
 
 import { JwtAuthGuard } from '../auth/jwt-auth.gard';
+import { InvalidCodeException } from '../exceptions/invalicode.exception.filter';
 import { NewUserDto, UpdatePushTokenDto, UserPhoneDto } from './users.dto';
 import { User } from './users.entity';
+import { isValidUserCode } from './users.helper';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -25,6 +27,28 @@ export class UsersController {
   @Post('/registration')
   async create(@Body() newUserDto: NewUserDto) {
     return this.service.create(newUserDto);
+  }
+
+  @ApiOkResponse({
+    description: '',
+    type: User,
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error occured.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request. Invalid user code.',
+  })
+  @ApiNotFoundResponse({
+    description: 'User not found.',
+  })
+  @UseGuards(JwtAuthGuard)
+  @Get(':code')
+  async findOne(@Param('code') code: string) {
+    if (!isValidUserCode(code)) {
+      throw new InvalidCodeException('User code is incorrect!');
+    }
+    return this.service.findOne(code);
   }
 
   // @ApiOkResponse({

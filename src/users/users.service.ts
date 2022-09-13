@@ -9,7 +9,6 @@ import { IDataServices } from 'src/core/generics/data.services.abstract';
 import { fail, Result, succeed } from '../config/htt-response';
 import { codeGenerator, ErrorMessages, generateDefaultPassword } from '../shared/utils';
 import { NewUserDto, UpdatePushTokenDto, UserPhoneDto } from './users.dto';
-import { User, UserDocument } from './users.entity';
 import { IFindUserbyEmailOrPhone, IUserTokenVerification } from './users.helper';
 import { getDefaultUserInfos } from './users.helper';
 
@@ -64,10 +63,7 @@ export class UsersService {
         lastUpdatedAt: new Date(),
         publications: [],
       };
-      console.log({ password });
       const createdUser = await this.dataServices.users.create(user);
-      // await this.model.create(user);
-      console.log(createdUser.firstName);
       return succeed({
         code: HttpStatus.CREATED,
         data: getDefaultUserInfos(createdUser),

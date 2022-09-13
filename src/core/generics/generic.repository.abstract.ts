@@ -5,6 +5,8 @@ export abstract class IGenericRepository<T> {
   abstract findOne(code: string, ignoreAttributes: string): Promise<T>;
 
   abstract create(item: T): Promise<T>;
+}
 
-  // abstract update(id: string, item: T): Promise<T>;
+export abstract class IUserRepository<T> {
+  abstract authentification(phone: string, password: string): Promise<T>;
 }

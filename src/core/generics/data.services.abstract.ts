@@ -4,11 +4,12 @@
 // import { UserEntity } from '../entities/User';
 import { Media } from '../../medias/medias.entity';
 import { Publication } from '../../publication/publication.entity';
-import { User } from '../../users/users.entity';
+import { User, UserDocument } from '../../users/users.entity';
 import { IGenericRepository } from './generic.repository.abstract';
+import { UserRepository } from '../repositories/user.repository';
 
 export abstract class IDataServices {
-  abstract users: IGenericRepository<User>;
+  abstract users: UserRepository<User | UserDocument>;
 
   abstract publications: IGenericRepository<Publication>;
 
