@@ -9,30 +9,32 @@ import { Publication, PublicationDocument } from './../../publication/publicatio
 import { User, UserDocument } from './../../users/users.entity';
 import { MongoGenericRepository } from './GR-mongo-generic-repository';
 import { UserRepository } from '../repositories/user.repository';
+import { MediaRepository } from '../repositories/media.repository';
+import { PublicationRepository } from '../repositories/publication.repository';
 
 @Injectable()
 export class MongoDataServices
   implements IDataServices, OnApplicationBootstrap
 {
   users: UserRepository<User>;
-  publications: MongoGenericRepository<Publication>;
-  medias: MongoGenericRepository<Media>;
+  publications: PublicationRepository<Publication>;
+  medias: MediaRepository<Media>;
 
   constructor(
     @InjectModel(User.name)
-    private UserRepository: Model<UserDocument | User>,
+    private userRepository: Model<User>,
     @InjectModel(Publication.name)
-    private PublicationRepository: Model<PublicationDocument | Publication>,
+    private publicationRepository: Model<PublicationDocument | Publication>,
     @InjectModel(Media.name)
-    private MediaRepository: Model<MediaDocument | Media>,
+    private mediaRepository: Model<MediaDocument | Media>,
   ) {}
 
   onApplicationBootstrap() {
-    this.users = new UserRepository<User | UserDocument>(this.UserRepository);
-    this.publications = new MongoGenericRepository<Publication>(
-      this.PublicationRepository,
+    this.users = new UserRepository<User>(this.userRepository);
+    this.publications = new PublicationRepository<Publication>(
+      this.publicationRepository,
       ['user'],
     );
-    this.medias = new MongoGenericRepository<Media>(this.MediaRepository);
+    this.medias = new MediaRepository<Media>(this.mediaRepository);
   }
 }

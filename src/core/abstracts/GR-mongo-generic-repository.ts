@@ -12,15 +12,15 @@ export class MongoGenericRepository<T> implements IGenericRepository<T> {
     this._populateOnFind = populateOnFind;
   }
 
-  findAll(ignoreAttributes: string): Promise<T[]> {
+  findAll(filterAttributes: string): Promise<T[]> {
     return this._repository
-      .find({}, ignoreAttributes, { lean: true })
+      .find({}, filterAttributes, { lean: true })
       .populate(this._populateOnFind)
       .exec();
   }
 
-  findOne(code: string, ignoreAttributes: string): Promise<T> {
-    return this._repository.findOne({ code }, ignoreAttributes, { lean: true }).exec();
+  findOne(code: string, filterAttributes: string): Promise<T> {
+    return this._repository.findOne({ code }, filterAttributes, { lean: true }).exec();
   }
 
   create(item: T): Promise<T> {

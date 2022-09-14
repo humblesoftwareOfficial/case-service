@@ -1,23 +1,12 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-
-import { UsersModule } from '../users/users.module';
 import { PublicationController } from './publication.controller';
-import { Publication, PublicationSchema } from './publication.entity';
 import { PublicationService } from './publication.service';
+import { DataServicesModule } from '../core/abstracts/GR-data-services-module';
 
 @Module({
-  providers: [],
+  providers: [PublicationService],
   controllers: [PublicationController],
-  // imports: [
-  //   MongooseModule.forFeature([
-  //     {
-  //       name: Publication.name,
-  //       schema: PublicationSchema,
-  //     },
-  //   ]),
-  //   UsersModule,
-  // ],
-  exports: [],
+  imports: [DataServicesModule],
+  exports: [PublicationService],
 })
 export class PublicationModule {}

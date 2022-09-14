@@ -1,36 +1,38 @@
 /* eslint-disable prettier/prettier */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
-import { Model, Types } from 'mongoose';
 import { EUserGender } from 'src/core/entities/User';
 import { IDataServices } from 'src/core/generics/data.services.abstract';
 
 import { fail, Result, succeed } from '../config/htt-response';
-import { codeGenerator, ErrorMessages, generateDefaultPassword } from '../shared/utils';
+import {
+  codeGenerator,
+  ErrorMessages,
+  generateDefaultPassword,
+} from '../shared/utils';
 import { NewUserDto, UpdatePushTokenDto, UserPhoneDto } from './users.dto';
-import { IFindUserbyEmailOrPhone, IUserTokenVerification } from './users.helper';
+import {
+  IFindUserbyEmailOrPhone,
+  IUserTokenVerification,
+} from './users.helper';
 import { getDefaultUserInfos } from './users.helper';
-
-const PopulateOptionsAuth = [];
 
 @Injectable()
 export class UsersService {
-  // constructor(
-  //   @InjectModel(User.name)
-  //   private readonly model: Model<UserDocument>,
-  // ) {}
   constructor(private dataServices: IDataServices) {}
 
   async findOne(code: string): Promise<Result> {
     try {
-      const user = await this.dataServices.users.findOne(code, '-_id -__v');
+      const user = await this.dataServices.users.findOne(
+        code,
+        '-_id -__v -password',
+      );
       if (!user) {
         return fail({
           code: HttpStatus.NOT_FOUND,
           message: 'User not found',
-          error: "Not found!",
-        })
+          error: 'Not found!',
+        });
       }
       return succeed({
         code: HttpStatus.OK,
@@ -58,7 +60,7 @@ export class UsersService {
         gender: newUser.gender || EUserGender.OTHER,
         address: newUser.address,
         push_tokens: newUser.push_tokens || [],
-        profile_picture: "",
+        profile_picture: '',
         createdAt: new Date(),
         lastUpdatedAt: new Date(),
         publications: [],
@@ -87,7 +89,10 @@ export class UsersService {
 
   async updatePushToken(value: UpdatePushTokenDto): Promise<Result> {
     try {
-      const user = await this.dataServices.users.findOne(value.user, '_id');
+      const user = await this.dataServices.users.updatePushTokens(
+        value.user,
+        value.tokenValue,
+      );
       if (!user) {
         return fail({
           code: HttpStatus.NOT_FOUND,
@@ -95,7 +100,6 @@ export class UsersService {
           error: 'Not found ressource',
         });
       }
-      // await this.__updatePushTokens(user.code, value.tokenValue);
       return succeed({
         code: HttpStatus.OK,
         data: {
@@ -112,20 +116,19 @@ export class UsersService {
 
   async isPhoneNumberRegistered(value: UserPhoneDto): Promise<Result> {
     try {
-      // const user = await this.__findByPhone(value.phone);
-      // if (!user) {
-      //   return fail({
-      //     code: HttpStatus.NOT_FOUND,
-      //     message: 'Not registered!',
-      //     error: '',
-      //   });
-      // }
-      // return succeed({
-      //   code: HttpStatus.OK,
-      //   message: 'Already registred',
-      //   data: {},
-      // });
-      return null;
+      const user = await this.dataServices.users.findByPhoneNumber(value.phone);
+      if (!user) {
+        return fail({
+          code: HttpStatus.NOT_FOUND,
+          message: 'Not registered!',
+          error: '',
+        });
+      }
+      return succeed({
+        code: HttpStatus.OK,
+        message: 'Already registred',
+        data: {},
+      });
     } catch (error) {
       console.log({ error });
       throw new HttpException(
@@ -155,70 +158,5 @@ export class UsersService {
     //   )
     //   .lean()
     //   .populate(PopulateOptionsAuth);
-  }
-
-  async __findByCode(code: string) {
-    // return await this.model.findOne({ code });
-  }
-
-  async __findByPhone(phone: string) {
-    // return await this.model.findOne({ phone });
-  }
-
-  async __updatePushTokens(idUser: string, pushTokenValue: string) {
-    // return await this.model.findByIdAndUpdate(idUser, {
-    //   $addToSet: {
-    //     push_tokens: pushTokenValue,
-    //   },
-    // });
-  }
-
-  async __linkWalletToUser(idUser: string, walletId: any) {
-    // return await this.model.findByIdAndUpdate(idUser, {
-    //   $addToSet: {
-    //     wallets: walletId,
-    //   },
-    // });
-  }
-
-  async __getWallets(code: string) {
-    // return await this.model.aggregate([
-    //   {
-    //     $match: {
-    //       code,
-    //     },
-    //   },
-    //   {
-    //     $lookup: {
-    //       from: 'wallets',
-    //       localField: '_id',
-    //       foreignField: 'owner',
-    //       as: 'wallets',
-    //     },
-    //   },
-    //   {
-    //     $project: {
-    //       _id: 0,
-    //       wallet: '$wallets',
-    //     },
-    //   },
-    //   {
-    //     $unwind: {
-    //       path: '$wallet',
-    //     },
-    //   },
-    //   {
-    //     $match: {
-    //       'wallet.isDeleted': false,
-    //     },
-    //   },
-    //   {
-    //     $project: {
-    //       'wallet._id': 0,
-    //       'wallet.__v': 0,
-    //       'wallet.transactions': 0,
-    //     },
-    //   },
-    // ]);
   }
 }

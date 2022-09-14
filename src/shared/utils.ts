@@ -10,6 +10,7 @@ const generateCode = (length: number) => {
   return code;
 };
 
+
 export const codeGenerator = (prefix: string) =>
   `${prefix}-${Date.now().toString()}-${generateCode(5)}`;
 

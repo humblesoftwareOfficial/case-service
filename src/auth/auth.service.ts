@@ -9,7 +9,6 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 import { Result, succeed } from '../config/htt-response';
-import { UsersService } from '../users/users.service';
 import { AuthDto } from './auth.dto';
 import { IDataServices } from '../core/generics/data.services.abstract';
 
@@ -39,12 +38,7 @@ export class AuthService {
     const { email, password, phone } = authDto;
     console.log({ phone });
     console.log({ password })
-    const user = await this.dataServices.users.authentification(phone, password);
-    // await this.usersService.__findByEmailOrLogin({
-    //   email,
-    //   phone,
-    // });
-    console.log({ user });
+    const user = await this.dataServices.users.authentification(phone);
     if (!user) {
       throw new HttpException(
         `Authentication failed. Please check your login informations and try again`,

@@ -12,10 +12,10 @@ export type PublicationDocument = Publication & Document;
 
 @Schema()
 export class Publication extends DefaultAttributes {
-  @Prop({ required: true, type: String })
+  @Prop({ type: String })
   label: string;
 
-  @Prop({ required: true, type: String })
+  @Prop({ type: String })
   description: string;
 
   @Prop({ type: Number })
