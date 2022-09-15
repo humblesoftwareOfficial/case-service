@@ -16,6 +16,7 @@ export abstract class IUserRepository<T> {
   abstract updatePushTokens(code: string, pushtoken: string): Promise<T>;
   abstract findByPhoneNumber(phone: string): Promise<T>;
   abstract linkPublicationToUser(code: string, idPublication: Types.ObjectId): Promise<T>;
+  abstract findByPseudo(pseudo: string): Promise<T>;
 }
 
 export abstract class IPublicationRepository<T>{

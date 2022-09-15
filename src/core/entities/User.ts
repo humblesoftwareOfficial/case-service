@@ -11,6 +11,7 @@ export class UserEntity extends DefaultAttributesEntity {
   firstName: string;
   lastName: string;
   phone: string;
+  pseudo: string;
   email: string;
   password: string;
   gender: EUserGender = EUserGender.OTHER;

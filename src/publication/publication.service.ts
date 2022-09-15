@@ -203,7 +203,7 @@ export class PublicationService {
       });
     } catch (error) {
       throw new HttpException(
-        `Error while creating new publication. Try again.`,
+        `Error while updating publication. Try again.`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

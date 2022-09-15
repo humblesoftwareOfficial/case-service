@@ -1,10 +1,10 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards, Patch } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger/dist';
 
 import { JwtAuthGuard } from '../auth/jwt-auth.gard';
 import { InvalidCodeException } from '../exceptions/invalicode.exception.filter';
-import { NewUserDto, UpdatePushTokenDto, UserPhoneDto } from './users.dto';
+import { NewUserDto, UpdatePushTokenDto, UserPhoneDto, UpdateUserDto } from './users.dto';
 import { User } from './users.entity';
 import { isValidUserCode } from './users.helper';
 import { UsersService } from './users.service';
@@ -81,5 +81,48 @@ export class UsersController {
   @Post('/pushtokens')
   async updatePushTokens(@Body() value: UpdatePushTokenDto) {
     return this.service.updatePushToken(value);
+  }
+
+  @ApiOkResponse({
+    description: 'User successfully updated.',
+    type: User,
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error occured.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+  })
+  @ApiNotFoundResponse({
+    description: 'User not found.',
+  })
+  @Patch(':code')
+  async update(
+    @Param('code') code: string,
+    @Body() value: UpdateUserDto,
+  ) {
+    if (!isValidUserCode(code)) {
+      throw new InvalidCodeException('User code is incorrect!');
+    }
+    return this.service.update(code, value);
+  }
+
+  @ApiOkResponse({
+    description: '',
+    type: Boolean,
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error occured.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request. Invalid user code.',
+  })
+  @ApiNotFoundResponse({
+    description: 'User not found.',
+  })
+  @UseGuards(JwtAuthGuard)
+  @Get('/ispseudoavailable/:pseudo')
+  async isAvailablePseudo(@Param('pseudo') pseudo: string) {
+    return this.service.isPseudoAvailable(pseudo);
   }
 }

@@ -20,6 +20,9 @@ export class User extends DefaultAttributes {
   @Prop({ required: true, type: String, unique: true })
   phone: string;
 
+  @Prop({ required: true, type: String })
+  pseudo: string;
+
   @Prop({ type: String, default: '' })
   email: string;
 

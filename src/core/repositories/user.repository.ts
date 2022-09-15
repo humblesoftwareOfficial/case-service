@@ -10,13 +10,21 @@ export class UserRepository<T>
   constructor(repository: Model<T>, populateOnFind: string[] = []) {
     super(repository, populateOnFind);
   }
-  
-  linkPublicationToUser(code: string, idPublication: Types.ObjectId): Promise<T> {
-    return this._repository.findOneAndUpdate({ code }, {
-      $addToSet: {
-        publications: idPublication
-      }
-    }).exec();
+
+  linkPublicationToUser(
+    code: string,
+    idPublication: Types.ObjectId,
+  ): Promise<T> {
+    return this._repository
+      .findOneAndUpdate(
+        { code },
+        {
+          $addToSet: {
+            publications: idPublication,
+          },
+        },
+      )
+      .exec();
   }
 
   findByPhoneNumber(phone: string): Promise<T> {
@@ -40,6 +48,12 @@ export class UserRepository<T>
         },
         { new: true },
       )
+      .exec();
+  }
+
+  findByPseudo(pseudo: string): Promise<T> {
+    return this._repository
+      .findOne({ pseudo }, '-_id -__v', { lean: true })
       .exec();
   }
 }
