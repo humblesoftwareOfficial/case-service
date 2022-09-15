@@ -31,4 +31,5 @@ export interface IPublicationsListFilter {
   month?: number;
   year?: number;
   user?: Types.ObjectId;
+  searchTerm?: string;
 }

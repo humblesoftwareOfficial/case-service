@@ -46,120 +46,142 @@ export class PublicationRepository<T>
   }
 
   getPublicationsList(filter: IPublicationsListFilter): Promise<any[]> {
-    return this._repository.aggregate([
-      {
-        $match: {
-          ...(filter.type && {
-            type: filter.type,
-          }),
-          ...(filter.week && {
-            week: filter.week,
-          }),
-          ...(filter.month && {
-            week: filter.month,
-          }),
-          ...(filter.year && {
-            week: filter.year,
-          }),
-          ...(filter.user && {
-            user: filter.user,
-          }),
-          isDeleted: false,
+    const priceFilter = parseInt(filter.searchTerm) || null;
+    console.log({ priceFilter });
+    return this._repository
+      .aggregate([
+        {
+          $match: {
+            ...(filter.type && {
+              type: filter.type,
+            }),
+            ...(filter.week && {
+              week: filter.week,
+            }),
+            ...(filter.month && {
+              week: filter.month,
+            }),
+            ...(filter.year && {
+              week: filter.year,
+            }),
+            ...(filter.user && {
+              user: filter.user,
+            }),
+            ...(priceFilter && {
+              price: priceFilter,
+            }),
+            ...(filter.searchTerm && !priceFilter && {
+              $or: [
+                {
+                  label: {
+                    $regex: new RegExp(filter.searchTerm, 'i'),
+                  },
+                },
+                {
+                  description: {
+                    $regex: new RegExp(filter.searchTerm, 'i'),
+                  },
+                },
+              ],
+            }),
+            isDeleted: false,
+          },
         },
-      },
-      {
-        $sort: {
-          createdAt: -1,
+        {
+          $sort: {
+            createdAt: -1,
+          },
         },
-      },
-      {
-        $facet: {
-          count: [
-            {
-              $group: {
-                _id: null,
-                value: {
-                  $sum: 1,
+        {
+          $facet: {
+            count: [
+              {
+                $group: {
+                  _id: null,
+                  value: {
+                    $sum: 1,
+                  },
                 },
               },
-            },
-            {
-              $project: {
-                _id: 0,
+              {
+                $project: {
+                  _id: 0,
+                },
               },
-            },
-          ],
-          data: [
-            {
-              $skip: filter.skip,
-            },
-            {
-              $limit: filter.limit,
-            },
-          ],
-        },
-      },
-      {
-        $unwind: {
-          path: '$count',
-        },
-      },
-      {
-        $unwind: {
-          path: '$data',
-        },
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'data.user',
-          foreignField: '_id',
-          as: 'data.user',
-        },
-      },
-      {
-        $lookup: {
-          from: 'media',
-          localField: 'data.medias',
-          foreignField: '_id',
-          as: 'data.medias',
-        },
-      },
-      {
-        $unwind: {
-          path: '$data.user',
-        },
-      },
-      {
-        $project: {
-          total: '$count.value',
-          code: '$data.code',
-          createdAt: '$data.createdAt',
-          lastUpdatedAt: '$data.lastUpdatedAt',
-          label: '$data.label',
-          description: '$data.description',
-          type: '$data.type',
-          week: '$data.week',
-          month: '$data.month',
-          year: '$data.year',
-          user: {
-            code: '$data.user.code',
-            firstName: '$data.user.firstName',
-            lastName: '$data.user.lastName',
-            profile_picture: '$data.user.profile_picture',
-            phone: '$data.user.phone',
+            ],
+            data: [
+              {
+                $skip: filter.skip,
+              },
+              {
+                $limit: filter.limit,
+              },
+            ],
           },
-          medias: '$data.medias',
         },
-      },
-      {
-        $project: {
-          'medias._id': 0,
-          'medias.entity': 0,
-          'medias.onModel': 0,
-          'medias.__v': 0,
+        {
+          $unwind: {
+            path: '$count',
+          },
         },
-      },
-    ]).exec();
+        {
+          $unwind: {
+            path: '$data',
+          },
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'data.user',
+            foreignField: '_id',
+            as: 'data.user',
+          },
+        },
+        {
+          $lookup: {
+            from: 'media',
+            localField: 'data.medias',
+            foreignField: '_id',
+            as: 'data.medias',
+          },
+        },
+        {
+          $unwind: {
+            path: '$data.user',
+          },
+        },
+        {
+          $project: {
+            total: '$count.value',
+            code: '$data.code',
+            createdAt: '$data.createdAt',
+            lastUpdatedAt: '$data.lastUpdatedAt',
+            label: '$data.label',
+            description: '$data.description',
+            type: '$data.type',
+            week: '$data.week',
+            month: '$data.month',
+            year: '$data.year',
+            price: '$data.price',
+            user: {
+              code: '$data.user.code',
+              firstName: '$data.user.firstName',
+              lastName: '$data.user.lastName',
+              profile_picture: '$data.user.profile_picture',
+              phone: '$data.user.phone',
+            },
+            medias: '$data.medias',
+          },
+        },
+        {
+          $project: {
+            'medias._id': 0,
+            'medias.entity': 0,
+            'medias.onModel': 0,
+            'medias.__v': 0,
+          },
+        },
+      ])
+      .exec();
   }
 }

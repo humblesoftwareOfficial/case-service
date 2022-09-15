@@ -79,6 +79,11 @@ export class PublicationsListDto extends PaginationDto {
 
   @ApiProperty({ required: false })
   @IsOptional({})
+  @IsString()
+  searchTerm: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional({})
   @IsNotEmpty({ message: 'User value cannot be empty.' })
   @Validate(UserCodeValidator)
   user: string;
