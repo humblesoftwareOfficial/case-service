@@ -1,14 +1,22 @@
 import { Injectable, HttpException } from '@nestjs/common';
 import { IDataServices } from '../core/generics/data.services.abstract';
-import { NewPublicationDto, PublicationsListDto } from './publication.dto';
+import {
+  NewPublicationDto,
+  PublicationsListDto,
+  UpdatePublicationDto,
+} from './publication.dto';
 import { fail, Result, succeed } from '../config/htt-response';
 import { HttpStatus } from '@nestjs/common/enums';
 import { codeGenerator, ErrorMessages } from '../shared/utils';
 import { getWeekNumber } from '../shared/date.helpers';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class PublicationService {
-  constructor(private dataServices: IDataServices) {}
+  constructor(
+    private dataServices: IDataServices,
+    private jwtService: JwtService,
+  ) {}
 
   async create(value: NewPublicationDto): Promise<Result> {
     try {
@@ -21,6 +29,9 @@ export class PublicationService {
         });
       }
       const creationDate = new Date();
+      // console.log({ value });
+      // const decodedToken = this.jwtService.verify(value.token);
+      // console.log({ decodedToken });
       const publication = {
         code: codeGenerator('PUB'),
         createdAt: creationDate,
@@ -120,9 +131,79 @@ export class PublicationService {
         },
       });
     } catch (error) {
-      console.log({ error })
       throw new HttpException(
         ErrorMessages.ERROR_GETTING_DATA,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async update(code: string, value: UpdatePublicationDto): Promise<Result> {
+    try {
+      const user = await this.dataServices.users.findOne(
+        value.user,
+        '_id code',
+      );
+      if (!user) {
+        return fail({
+          code: HttpStatus.NOT_FOUND,
+          message: 'User not found',
+          error: 'Not found resource',
+        });
+      }
+      const publication = await this.dataServices.publications.findOne(
+        code,
+        '-_id',
+      );
+      if (!publication) {
+        return fail({
+          code: HttpStatus.NOT_FOUND,
+          message: 'User not found',
+          error: 'Not found resource',
+        });
+      }
+      if (publication.user.toString() !== user['_id'].toString()) {
+        return fail({
+          code: HttpStatus.UNAUTHORIZED,
+          message: 'Bad request',
+          error: 'UNAUTHORIZED',
+        });
+      }
+      const update = {
+        ...(value.label && {
+          label: value.label,
+        }),
+        ...(value.description && {
+          description: value.description,
+        }),
+        ...(value.price && {
+          price: value.price,
+        }),
+        ...(value.type && {
+          type: value.type,
+        }),
+        lastUpdatedAt: new Date(),
+      };
+      const result = await this.dataServices.publications.update(
+        publication.code,
+        update,
+      );
+      if (!result) {
+        return fail({
+          code: HttpStatus.NOT_MODIFIED,
+          message: '',
+          error: '',
+        });
+      }
+      return succeed({
+        code: HttpStatus.OK,
+        data: await this.dataServices.publications.getPublicationInfoByCode(
+          code,
+        ),
+      });
+    } catch (error) {
+      throw new HttpException(
+        `Error while creating new publication. Try again.`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

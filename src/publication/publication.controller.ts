@@ -1,4 +1,5 @@
-import { Controller, Body, Post, UseGuards, Param, Get } from '@nestjs/common';
+/* eslint-disable prettier/prettier */
+import { Controller, Body, Post, UseGuards, Param, Get, Patch } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -9,7 +10,7 @@ import {
 } from '@nestjs/swagger';
 import { PublicationService } from './publication.service';
 import { Publication } from './publication.entity';
-import { NewPublicationDto, PublicationsListDto } from './publication.dto';
+import { NewPublicationDto, PublicationsListDto, UpdatePublicationDto } from './publication.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.gard';
 import { isValidPublicationCode } from './publication.helper';
 import { InvalidCodeException } from '../exceptions/invalicode.exception.filter';
@@ -70,5 +71,29 @@ export class PublicationController {
       throw new InvalidCodeException('Publication code is incorrect!');
     }
     return this.service.findOne(code);
+  }
+
+  @ApiOkResponse({
+    description: 'Publication successfully updated.',
+    type: Publication,
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error occured.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+  })
+  @ApiNotFoundResponse({
+    description: 'Publication not found.',
+  })
+  @Patch(':code')
+  async update(
+    @Param('code') code: string,
+    @Body() value: UpdatePublicationDto,
+  ) {
+    if (!isValidPublicationCode(code)) {
+      throw new InvalidCodeException('Publication code is incorrect!');
+    }
+    return this.service.update(code, value);
   }
 }

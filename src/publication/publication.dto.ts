@@ -7,22 +7,24 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsString,
   Min,
   Validate,
 } from 'class-validator';
 import { EPublicationType } from '../core/entities/Publication';
 import { UserCodeValidator } from '../users/users.helper';
 import { PaginationDto } from '../shared/pagination.dto';
+import { PublicationCodeValidator } from './publication.helper';
 
 export class NewPublicationDto {
   @ApiProperty({ required: false })
   @IsOptional({})
-  @IsNotEmpty({ message: 'Label (Title) of publication is required.' })
+  @IsString({ message: 'Label (Title) of publication must be string.' })
   label: string;
 
   @ApiProperty({ required: false })
   @IsOptional({})
-  @IsNotEmpty({ message: 'Description of publication is required.' })
+  @IsString({ message: 'Description of publication must be string.' })
   description: string;
 
   @ApiProperty({ required: false })
@@ -40,6 +42,11 @@ export class NewPublicationDto {
   @IsNotEmpty({ message: 'User is required.' })
   @Validate(UserCodeValidator)
   user: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional({})
+  @IsString({ message: 'Description of publication must be string.' })
+  token?: string;
 }
 
 export class PublicationsListDto extends PaginationDto {
@@ -75,4 +82,34 @@ export class PublicationsListDto extends PaginationDto {
   @IsNotEmpty({ message: 'User value cannot be empty.' })
   @Validate(UserCodeValidator)
   user: string;
+}
+
+export class UpdatePublicationDto {
+  @IsNotEmpty({ message: 'User is required.' })
+  @Validate(UserCodeValidator)
+  user: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional({})
+  @IsString({ message: 'Label (Title) of publication must be string.' })
+  label: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional({})
+  @IsString({ message: 'Description of publication must be string.' })
+  description: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional({})
+  @Type(() => Number)
+  @IsNumber()
+  price: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional({})
+  @IsNotEmpty({ message: 'Publication type is required.' })
+  @IsEnum(EPublicationType, {
+    message: 'Publication type must be a valid value',
+  })
+  type: EPublicationType;
 }

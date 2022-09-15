@@ -11,7 +11,6 @@ export class MongoGenericRepository<T> implements IGenericRepository<T> {
     this._repository = repository;
     this._populateOnFind = populateOnFind;
   }
-
   findAll(filterAttributes: string): Promise<T[]> {
     return this._repository
       .find({}, filterAttributes, { lean: true })
@@ -26,4 +25,9 @@ export class MongoGenericRepository<T> implements IGenericRepository<T> {
   create(item: T): Promise<T> {
     return this._repository.create(item);
   }
+
+  update(code: string, update: any): Promise<T> {
+    return this._repository.findOneAndUpdate({ code }, update, { new: true }).exec()
+  }
+
 }
