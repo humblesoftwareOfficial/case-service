@@ -3,13 +3,16 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsEnum,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  Min,
   Validate,
 } from 'class-validator';
 import { EPublicationType } from '../core/entities/Publication';
 import { UserCodeValidator } from '../users/users.helper';
+import { PaginationDto } from '../shared/pagination.dto';
 
 export class NewPublicationDto {
   @ApiProperty({ required: false })
@@ -35,6 +38,41 @@ export class NewPublicationDto {
   type: EPublicationType;
 
   @IsNotEmpty({ message: 'User is required.' })
+  @Validate(UserCodeValidator)
+  user: string;
+}
+
+export class PublicationsListDto extends PaginationDto {
+  @IsNotEmpty({ message: 'Publication type is required.' })
+  @IsEnum(EPublicationType, {
+    message: 'Publication type must be a valid value',
+  })
+  type: EPublicationType;
+
+  @ApiProperty({ required: false })
+  @IsOptional({})
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  week: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional({})
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  month: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional({})
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  year: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional({})
+  @IsNotEmpty({ message: 'User value cannot be empty.' })
   @Validate(UserCodeValidator)
   user: string;
 }

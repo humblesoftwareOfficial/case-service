@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Types } from 'mongoose';
+import { IPublicationsListFilter } from 'src/publication/publication.helper';
 export abstract class IGenericRepository<T> {
   abstract findAll(ignoreAttributes: string): Promise<T[]>;
 
@@ -16,7 +17,9 @@ export abstract class IUserRepository<T> {
 }
 
 export abstract class IPublicationRepository<T>{
-  abstract linkMediasToPublication(code: string, mediasId: Types.ObjectId[]): Promise<T>
+  abstract linkMediasToPublication(code: string, mediasId: Types.ObjectId[]): Promise<T>;
+  abstract getPublicationInfoByCode(code: string): Promise<T>;
+  abstract getPublicationsList(filter: IPublicationsListFilter): Promise<any[]>;
 }
 
 export abstract class IMediaRepository<T>{
