@@ -1,13 +1,11 @@
-import { Controller, Post, Body, HttpStatus } from '@nestjs/common';
-import {
-  ApiBadRequestResponse,
-  ApiInternalServerErrorResponse,
-  ApiNotFoundResponse,
-  ApiOkResponse,
-} from '@nestjs/swagger';
-import { AuthService } from './auth.service';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prettier/prettier */
+import { Body, Controller, Get, HttpStatus, Param, Post } from '@nestjs/common';
+import { ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
+
 import { User } from '../users/users.entity';
 import { AuthDto } from './auth.dto';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
@@ -37,5 +35,10 @@ export class AuthController {
       });
     }
     return this.authService.login(authDto);
+  }
+
+  @Get('/verify/:token')
+  async verifyToken(@Param('token') token: string) {
+    return this.authService.verifyToken(token);
   }
 }

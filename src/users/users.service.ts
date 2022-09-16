@@ -1,33 +1,27 @@
 /* eslint-disable prettier/prettier */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { EUserGender } from 'src/core/entities/User';
 import { IDataServices } from 'src/core/generics/data.services.abstract';
+import { sendMessage } from 'src/extras/send.sms';
 
 import { fail, Result, succeed } from '../config/htt-response';
-import {
-  codeGenerator,
-  ErrorMessages,
-  generateDefaultPassword,
-} from '../shared/utils';
-import { NewUserDto, UpdatePushTokenDto, UserPhoneDto, UpdateUserDto } from './users.dto';
-import {
-  IFindUserbyEmailOrPhone,
-  IUserTokenVerification,
-} from './users.helper';
+import { codeGenerator, ErrorMessages, generateDefaultPassword } from '../shared/utils';
+import { NewUserDto, UpdatePushTokenDto, UpdateUserDto, UserPhoneDto } from './users.dto';
+import { IFindUserbyEmailOrPhone, IUserTokenVerification } from './users.helper';
 import { getDefaultUserInfos } from './users.helper';
 
 @Injectable()
 export class UsersService {
-  constructor(private dataServices: IDataServices) {}
+  constructor(private dataServices: IDataServices, private jwtService: JwtService) {}
 
   async findOne(code: string): Promise<Result> {
     try {
-      const user = await this.dataServices.users.findOne(
-        code,
-        '-_id -__v -password -publications',
+      const user = await this.dataServices.users.getAccountInfos(
+        code
       );
-      if (!user) {
+      if (!user?.length) {
         return fail({
           code: HttpStatus.NOT_FOUND,
           message: 'User not found',
@@ -36,7 +30,7 @@ export class UsersService {
       }
       return succeed({
         code: HttpStatus.OK,
-        data: user,
+        data: user[0],
       });
     } catch (error) {
       throw new HttpException(
@@ -67,9 +61,16 @@ export class UsersService {
         pseudo: newUser.pseudo,
       };
       const createdUser = await this.dataServices.users.create(user);
+      const payload = {
+        userId: createdUser['_id'],
+        code: user.code,
+      };
       return succeed({
         code: HttpStatus.CREATED,
-        data: getDefaultUserInfos(createdUser),
+        data: {
+          ...getDefaultUserInfos(createdUser),
+          access_token: this.jwtService.sign(payload),
+        },
         message: 'User successfully registered.',
       });
     } catch (error) {
@@ -117,18 +118,14 @@ export class UsersService {
 
   async isPhoneNumberRegistered(value: UserPhoneDto): Promise<Result> {
     try {
+      // sendMessage();
       const user = await this.dataServices.users.findByPhoneNumber(value.phone);
-      if (!user) {
-        return fail({
-          code: HttpStatus.NOT_FOUND,
-          message: 'Not registered!',
-          error: '',
-        });
-      }
       return succeed({
         code: HttpStatus.OK,
-        message: 'Already registred',
-        data: {},
+        data: {
+          isRegistered: user ? true : false,
+          phone: value.phone,
+        }
       });
     } catch (error) {
       console.log({ error });

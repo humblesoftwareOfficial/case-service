@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Types } from 'mongoose';
 import { IPublicationsListFilter } from 'src/publication/publication.helper';
+
 export abstract class IGenericRepository<T> {
   abstract findAll(ignoreAttributes: string): Promise<T[]>;
 
@@ -17,6 +18,7 @@ export abstract class IUserRepository<T> {
   abstract findByPhoneNumber(phone: string): Promise<T>;
   abstract linkPublicationToUser(code: string, idPublication: Types.ObjectId): Promise<T>;
   abstract findByPseudo(pseudo: string): Promise<T>;
+  abstract getAccountInfos(code: string): Promise<any[]>
 }
 
 export abstract class IPublicationRepository<T>{

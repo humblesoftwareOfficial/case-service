@@ -120,7 +120,6 @@ export class UsersController {
   @ApiNotFoundResponse({
     description: 'User not found.',
   })
-  @UseGuards(JwtAuthGuard)
   @Get('/ispseudoavailable/:pseudo')
   async isAvailablePseudo(@Param('pseudo') pseudo: string) {
     return this.service.isPseudoAvailable(pseudo);

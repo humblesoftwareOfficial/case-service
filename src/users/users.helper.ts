@@ -1,9 +1,5 @@
 /* eslint-disable prettier/prettier */
-import {
-  ValidationArguments,
-  ValidatorConstraint,
-  ValidatorConstraintInterface,
-} from 'class-validator';
+import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 import { User } from 'src/users/users.entity';
 
 export const isValidUserCode = (code: string) =>
@@ -32,6 +28,7 @@ export const getDefaultUserInfos = (user: User) => ({
   lastUpdatedDate: user?.lastUpdatedAt,
   phone: user?.phone,
   push_tokens: user.push_tokens,
+  profile_picture: user?.profile_picture,
 });
 
 export interface IFindUserbyEmailOrPhone {
