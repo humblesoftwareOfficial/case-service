@@ -19,4 +19,6 @@ export class UserEntity extends DefaultAttributesEntity {
   profile_picture: string;
   push_tokens: string[];
   publications: PublicationEntity[];
+  followers: UserEntity[];
+  subscriptions: UserEntity[];
 }

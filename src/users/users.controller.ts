@@ -1,10 +1,10 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, Param, Post, UseGuards, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger/dist';
 
 import { JwtAuthGuard } from '../auth/jwt-auth.gard';
 import { InvalidCodeException } from '../exceptions/invalicode.exception.filter';
-import { NewUserDto, UpdatePushTokenDto, UserPhoneDto, UpdateUserDto } from './users.dto';
+import { FollowAccountDto, NewUserDto, UnFollowAccountDto, UpdatePushTokenDto, UpdateUserDto, UserPhoneDto } from './users.dto';
 import { User } from './users.entity';
 import { isValidUserCode } from './users.helper';
 import { UsersService } from './users.service';
@@ -123,5 +123,37 @@ export class UsersController {
   @Get('/ispseudoavailable/:pseudo')
   async isAvailablePseudo(@Param('pseudo') pseudo: string) {
     return this.service.isPseudoAvailable(pseudo);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({
+    description: 'successfully followed account.',
+    type: User,
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error occured.',
+  })
+  @ApiNotFoundResponse({
+    description: 'User not found!',
+  })
+  @Post('/follow')
+  async followAccount(@Body() value: FollowAccountDto) {
+    return this.service.followAccount(value);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({
+    description: 'successfully unfollowed account.',
+    type: User,
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error occured.',
+  })
+  @ApiNotFoundResponse({
+    description: 'User not found!',
+  })
+  @Post('/unfollow')
+  async unFollowAccount(@Body() value: UnFollowAccountDto) {
+    return this.service.unFollowAccount(value);
   }
 }

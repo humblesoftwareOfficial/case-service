@@ -8,7 +8,7 @@ import { sendMessage } from 'src/extras/send.sms';
 
 import { fail, Result, succeed } from '../config/htt-response';
 import { codeGenerator, ErrorMessages, generateDefaultPassword } from '../shared/utils';
-import { NewUserDto, UpdatePushTokenDto, UpdateUserDto, UserPhoneDto } from './users.dto';
+import { FollowAccountDto, NewUserDto, UnFollowAccountDto, UpdatePushTokenDto, UpdateUserDto, UserPhoneDto } from './users.dto';
 import { IFindUserbyEmailOrPhone, IUserTokenVerification } from './users.helper';
 import { getDefaultUserInfos } from './users.helper';
 
@@ -59,6 +59,8 @@ export class UsersService {
         lastUpdatedAt: new Date(),
         publications: [],
         pseudo: newUser.pseudo,
+        followers: [],
+        subscriptions: [],
       };
       const createdUser = await this.dataServices.users.create(user);
       const payload = {
@@ -230,6 +232,90 @@ export class UsersService {
       console.log({ error })
       throw new HttpException(
         ErrorMessages.ERROR_GETTING_DATA,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async followAccount(value: FollowAccountDto): Promise<Result> {
+    try {
+      if (value.user === value.account) {
+        return fail({
+          code: HttpStatus.BAD_REQUEST,
+          message: '',
+          error: '',
+        });
+      }
+      const user = await this.dataServices.users.findOne(value.user, '_id code');
+      if (!user) {
+        return fail({
+          code: HttpStatus.NOT_FOUND,
+          message: 'User not found',
+          error: 'Not found resource',
+        });
+      }
+      const account = await this.dataServices.users.findOne(value.account, '_id code');
+      if (!account) {
+        return fail({
+          code: HttpStatus.NOT_FOUND,
+          message: 'Account to follow not found',
+          error: 'Not found resource',
+        });
+      }
+      await this.dataServices.users.addAccountFollower(user['_id'], account['_id']);
+      await this.dataServices.users.subscribeAccount(user['_id'], account['_id']);
+      return succeed({
+        code: HttpStatus.OK,
+        data: {
+          user: user.code,
+          account: account.code,
+        }
+      })
+    } catch (error) {
+      throw new HttpException(
+        'Error while updating account',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async unFollowAccount(value: UnFollowAccountDto): Promise<Result> {
+    try {
+      if (value.user === value.account) {
+        return fail({
+          code: HttpStatus.BAD_REQUEST,
+          message: '',
+          error: '',
+        });
+      }
+      const user = await this.dataServices.users.findOne(value.user, '_id code');
+      if (!user) {
+        return fail({
+          code: HttpStatus.NOT_FOUND,
+          message: 'User not found',
+          error: 'Not found resource',
+        });
+      }
+      const account = await this.dataServices.users.findOne(value.account, '_id code');
+      if (!account) {
+        return fail({
+          code: HttpStatus.NOT_FOUND,
+          message: 'Account to unfollow not found',
+          error: 'Not found resource',
+        });
+      }
+      await this.dataServices.users.removeAccountFollower(user['_id'], account['_id']);
+      await this.dataServices.users.unSubscribeAccount(user['_id'], account['_id']);
+      return succeed({
+        code: HttpStatus.OK,
+        data: {
+          user: user.code,
+          account: account.code,
+        }
+      })
+    } catch (error) {
+      throw new HttpException(
+        'Error while updating account',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

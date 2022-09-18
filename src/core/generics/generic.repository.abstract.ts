@@ -18,7 +18,11 @@ export abstract class IUserRepository<T> {
   abstract findByPhoneNumber(phone: string): Promise<T>;
   abstract linkPublicationToUser(code: string, idPublication: Types.ObjectId): Promise<T>;
   abstract findByPseudo(pseudo: string): Promise<T>;
-  abstract getAccountInfos(code: string): Promise<any[]>
+  abstract getAccountInfos(code: string): Promise<any[]>;
+  abstract addAccountFollower(idUser: Types.ObjectId, accountToFlowId: Types.ObjectId): Promise<T>;
+  abstract subscribeAccount(idUser: Types.ObjectId, accountSubscribedId: Types.ObjectId): Promise<T>;
+  abstract removeAccountFollower(idUser: Types.ObjectId, accountToFlowId: Types.ObjectId): Promise<T>;
+  abstract unSubscribeAccount(idUser: Types.ObjectId, accountSubscribedId: Types.ObjectId): Promise<T>
 }
 
 export abstract class IPublicationRepository<T>{

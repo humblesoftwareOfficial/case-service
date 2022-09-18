@@ -1,19 +1,11 @@
 /* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import {
-  IsEnum,
-  IsInt,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Min,
-  Validate,
-} from 'class-validator';
+import { IsEnum, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, Min, Validate } from 'class-validator';
+
 import { EPublicationType } from '../core/entities/Publication';
-import { UserCodeValidator } from '../users/users.helper';
 import { PaginationDto } from '../shared/pagination.dto';
+import { UserCodeValidator } from '../users/users.helper';
 import { PublicationCodeValidator } from './publication.helper';
 
 export class NewPublicationDto {
@@ -50,6 +42,8 @@ export class NewPublicationDto {
 }
 
 export class PublicationsListDto extends PaginationDto {
+  @ApiProperty({ required: false })
+  @IsOptional({})
   @IsNotEmpty({ message: 'Publication type is required.' })
   @IsEnum(EPublicationType, {
     message: 'Publication type must be a valid value',

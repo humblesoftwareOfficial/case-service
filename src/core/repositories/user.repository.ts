@@ -84,4 +84,36 @@ export class UserRepository<T>
       },
     ]).exec();
   }
+
+  addAccountFollower(idUser: Types.ObjectId, accountToFlowId: Types.ObjectId): Promise<T> {
+    return this._repository.findByIdAndUpdate(accountToFlowId, {
+      $addToSet: {
+        followers: idUser,
+      },
+    }).exec();
+  }
+  subscribeAccount(idUser: Types.ObjectId, accountSubscribedId: Types.ObjectId): Promise<T> {
+    return this._repository.findByIdAndUpdate(idUser, {
+      $addToSet: {
+        subscriptions: accountSubscribedId,
+      },
+    }).exec();
+  }
+
+  removeAccountFollower(idUser: Types.ObjectId, accountToFlowId: Types.ObjectId): Promise<T> {
+    return this._repository.findByIdAndUpdate(accountToFlowId, {
+      $pull: {
+        followers: idUser,
+      },
+    }).exec();
+  }
+  unSubscribeAccount(idUser: Types.ObjectId, accountSubscribedId: Types.ObjectId): Promise<T> {
+    return this._repository.findByIdAndUpdate(idUser, {
+      $pull: {
+        subscriptions: accountSubscribedId,
+      },
+    }).exec();
+  }
+
+
 }

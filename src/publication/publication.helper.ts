@@ -1,11 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { EPublicationType } from '../core/entities/Publication';
-import {
-  ValidationArguments,
-  ValidatorConstraint,
-  ValidatorConstraintInterface,
-} from 'class-validator';
+
+import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 import { Types } from 'mongoose';
+
+import { EPublicationType } from '../core/entities/Publication';
 
 export const isValidPublicationCode = (code: string) =>
   code && code.length === 23 && code.includes('PUB-');
@@ -26,7 +24,7 @@ export class PublicationCodeValidator implements ValidatorConstraintInterface {
 export interface IPublicationsListFilter {
   skip: number;
   limit: number;
-  type: EPublicationType;
+  type?: EPublicationType;
   week?: number;
   month?: number;
   year?: number;

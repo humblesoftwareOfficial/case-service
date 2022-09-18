@@ -2,8 +2,8 @@
 import { IsArray, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, Validate } from 'class-validator';
 import { EUserGender } from 'src/core/entities/User';
 
-import { UserCodeValidator } from './users.helper';
 import { URLValidator } from '../shared/url.helper';
+import { UserCodeValidator } from './users.helper';
 
 export class NewUserDto {
   @IsNotEmpty({ message: 'User first name is required.' })
@@ -124,4 +124,18 @@ export class UpdateUserDto {
     message: 'Tokens value must an array of valid token value',
   })
   push_tokens: string[];
+}
+
+export class FollowAccountDto {
+  @IsNotEmpty({ message: 'User is required.' })
+  @Validate(UserCodeValidator)
+  user: string;
+
+  @IsNotEmpty({ message: 'Account to follow is required.' })
+  @Validate(UserCodeValidator)
+  account: string;
+}
+
+export class UnFollowAccountDto extends FollowAccountDto {
+
 }

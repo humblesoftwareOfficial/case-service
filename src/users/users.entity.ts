@@ -43,6 +43,12 @@ export class User extends DefaultAttributes {
 
   @Prop({ type: [Types.ObjectId], default: [], ref: 'Publication' })
   publications: Publication[];
+
+  @Prop({ type: [Types.ObjectId], default: [], ref: 'User' })
+  followers: User[];
+
+  @Prop({ type: [Types.ObjectId], default: [], ref: 'User' })
+  subscriptions: User[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
