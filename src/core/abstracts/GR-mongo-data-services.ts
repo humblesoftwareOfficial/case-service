@@ -5,12 +5,18 @@ import { Model } from 'mongoose';
 
 import { Media, MediaDocument } from '../../medias/medias.entity';
 import { IDataServices } from '../generics/data.services.abstract';
-import { Publication, PublicationDocument } from './../../publication/publication.entity';
-import { User, UserDocument } from './../../users/users.entity';
-import { MongoGenericRepository } from './GR-mongo-generic-repository';
+import {
+  Publication,
+  PublicationDocument,
+} from './../../publication/publication.entity';
+import { User } from './../../users/users.entity';
 import { UserRepository } from '../repositories/user.repository';
 import { MediaRepository } from '../repositories/media.repository';
 import { PublicationRepository } from '../repositories/publication.repository';
+import { Category, CategoryDocument } from '../../categories/categories.entity';
+import { Section, SectionDocument } from '../../sections/sections.entity';
+import { CategoryRepository } from '../repositories/category.repository';
+import { SectionRepository } from '../repositories/section.repository';
 
 @Injectable()
 export class MongoDataServices
@@ -19,6 +25,8 @@ export class MongoDataServices
   users: UserRepository<User>;
   publications: PublicationRepository<Publication>;
   medias: MediaRepository<Media>;
+  section: SectionRepository<Section>;
+  category: CategoryRepository<Category>;
 
   constructor(
     @InjectModel(User.name)
@@ -27,6 +35,11 @@ export class MongoDataServices
     private publicationRepository: Model<PublicationDocument | Publication>,
     @InjectModel(Media.name)
     private mediaRepository: Model<MediaDocument | Media>,
+
+    @InjectModel(Section.name)
+    private sectionRepository: Model<SectionDocument | Section>,
+    @InjectModel(Category.name)
+    private categoryRepository: Model<CategoryDocument | Category>,
   ) {}
 
   onApplicationBootstrap() {
@@ -36,5 +49,12 @@ export class MongoDataServices
       ['user'],
     );
     this.medias = new MediaRepository<Media>(this.mediaRepository);
+    this.section = new SectionRepository<Section>(this.sectionRepository, [
+      'publications',
+    ]);
+    this.category = new CategoryRepository<Category>(this.categoryRepository, [
+      'section',
+      'publications',
+    ]);
   }
 }

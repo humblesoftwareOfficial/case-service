@@ -77,9 +77,10 @@ export class UserRepository<T>
           profile_picture: 1,
           gender: 1,
           email: 1,
-          publications: {
-            $size: '$publications',
-          },
+          pseudo: 1,
+          publications: { $cond: { if: { $isArray: "$publications" }, then: { $size: "$publications" }, else: 0 } },
+          followers: { $cond: { if: { $isArray: "$followers" }, then: { $size: "$followers" }, else: 0 } },
+          subscriptions: { $cond: { if: { $isArray: "$subscriptions" }, then: { $size: "$subscriptions" }, else: 0 } }
         },
       },
     ]).exec();
@@ -114,6 +115,4 @@ export class UserRepository<T>
       },
     }).exec();
   }
-
-
 }

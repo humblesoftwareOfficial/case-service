@@ -2,9 +2,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { Category, CategorySchema } from '../../categories/categories.entity';
+import { Section, SectionSchema } from '../..//sections/sections.entity';
 
 import { Media, MediaSchema } from '../../medias/medias.entity';
-import { Publication, PublicationSchema } from '../../publication/publication.entity';
+import {
+  Publication,
+  PublicationSchema,
+} from '../../publication/publication.entity';
 import { User, UserSchema } from '../../users/users.entity';
 import { IDataServices } from '../generics/data.services.abstract';
 import { MongoDataServices } from './GR-mongo-data-services';
@@ -15,6 +20,8 @@ import { MongoDataServices } from './GR-mongo-data-services';
       { name: User.name, schema: UserSchema },
       { name: Publication.name, schema: PublicationSchema },
       { name: Media.name, schema: MediaSchema },
+      { name: Section.name, schema: SectionSchema },
+      { name: Category.name, schema: CategorySchema },
     ]),
     // MongooseModule.forRoot(DATA_BASE_CONFIGURATION.mongoConnectionString),
     MongooseModule.forRootAsync({

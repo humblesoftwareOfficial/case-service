@@ -10,6 +10,8 @@ import { MediasModule } from './medias/medias.module';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { PublicationModule } from './publication/publication.module';
 import { UsersModule } from './users/users.module';
+import { SectionsModule } from './sections/sections.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { UsersModule } from './users/users.module';
     PublicationModule,
     MediasModule,
     DataServicesModule,
+    SectionsModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

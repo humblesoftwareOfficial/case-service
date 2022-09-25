@@ -10,6 +10,9 @@ export abstract class IGenericRepository<T> {
   abstract create(item: T): Promise<T>;
 
   abstract update(code: string, update: any): Promise<T>;
+
+  abstract findAllByCodes(codes: string[], filterAttributes: string): Promise<T[]>;
+  
 }
 
 export abstract class IUserRepository<T> {
@@ -32,5 +35,15 @@ export abstract class IPublicationRepository<T>{
 }
 
 export abstract class IMediaRepository<T>{
+  abstract insertMany(items: T[]): Promise<T[]>;
+}
+export abstract class ISectionRepository<T>{
+  abstract insertMany(items: T[]): Promise<T[]>;
+  abstract linkCategoriesToSection(code: string, categoriesIds: Types.ObjectId[]): Promise<T>;
+  abstract listSections(): Promise<any[]>;
+
+}
+
+export abstract class ICategoryRepository<T>{
   abstract insertMany(items: T[]): Promise<T[]>;
 }

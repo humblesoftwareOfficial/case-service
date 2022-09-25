@@ -21,7 +21,7 @@ import { InvalidCodeException } from '../exceptions/invalicode.exception.filter'
 export class PublicationController {
   constructor(private service: PublicationService) {}
 
-  @ApiCreatedResponse({
+  @ApiOkResponse({
     description: 'List of publications.',
     type: Publication,
     isArray: true,

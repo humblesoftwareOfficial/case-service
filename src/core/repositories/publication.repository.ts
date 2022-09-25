@@ -1,8 +1,10 @@
 /* eslint-disable prettier/prettier */
-import { MongoGenericRepository } from '../abstracts/GR-mongo-generic-repository';
-import { IPublicationRepository } from '../generics/generic.repository.abstract';
+
 import { Model, Types } from 'mongoose';
 import { IPublicationsListFilter } from 'src/publication/publication.helper';
+
+import { MongoGenericRepository } from '../abstracts/GR-mongo-generic-repository';
+import { IPublicationRepository } from '../generics/generic.repository.abstract';
 
 const PopulateOptions = [
   {
@@ -47,7 +49,6 @@ export class PublicationRepository<T>
 
   getPublicationsList(filter: IPublicationsListFilter): Promise<any[]> {
     const priceFilter = parseInt(filter.searchTerm) || null;
-    console.log({ priceFilter });
     return this._repository
       .aggregate([
         {
@@ -70,20 +71,21 @@ export class PublicationRepository<T>
             ...(priceFilter && {
               price: priceFilter,
             }),
-            ...(filter.searchTerm && !priceFilter && {
-              $or: [
-                {
-                  label: {
-                    $regex: new RegExp(filter.searchTerm, 'i'),
+            ...(filter.searchTerm &&
+              !priceFilter && {
+                $or: [
+                  {
+                    label: {
+                      $regex: new RegExp(filter.searchTerm, 'i'),
+                    },
                   },
-                },
-                {
-                  description: {
-                    $regex: new RegExp(filter.searchTerm, 'i'),
+                  {
+                    description: {
+                      $regex: new RegExp(filter.searchTerm, 'i'),
+                    },
                   },
-                },
-              ],
-            }),
+                ],
+              }),
             isDeleted: false,
           },
         },
@@ -169,6 +171,28 @@ export class PublicationRepository<T>
               lastName: '$data.user.lastName',
               profile_picture: '$data.user.profile_picture',
               phone: '$data.user.phone',
+              pseudo: '$data.user.pseudo',
+              publications: {
+                $cond: {
+                  if: { $isArray: '$data.user.publications' },
+                  then: { $size: '$data.user.publications' },
+                  else: 0,
+                },
+              },
+              followers: {
+                $cond: {
+                  if: { $isArray: '$data.user.followers' },
+                  then: { $size: '$data.user.followers' },
+                  else: 0,
+                },
+              },
+              subscriptions: {
+                $cond: {
+                  if: { $isArray: '$data.user.subscriptions' },
+                  then: { $size: '$data.user.subscriptions' },
+                  else: 0,
+                },
+              },
             },
             medias: '$data.medias',
           },
