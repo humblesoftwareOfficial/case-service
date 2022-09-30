@@ -2,6 +2,7 @@ import { Injectable, HttpException } from '@nestjs/common';
 import { IDataServices } from '../core/generics/data.services.abstract';
 import {
   NewPublicationDto,
+  NewPublicationFromProductDto,
   PublicationsListDto,
   UpdatePublicationDto,
 } from './publication.dto';
@@ -10,6 +11,7 @@ import { HttpStatus } from '@nestjs/common/enums';
 import { codeGenerator, ErrorMessages } from '../shared/utils';
 import { getWeekNumber } from '../shared/date.helpers';
 import { JwtService } from '@nestjs/jwt';
+import { Publication } from './publication.entity';
 
 @Injectable()
 export class PublicationService {
@@ -29,9 +31,6 @@ export class PublicationService {
         });
       }
       const creationDate = new Date();
-      // console.log({ value });
-      // const decodedToken = this.jwtService.verify(value.token);
-      // console.log({ decodedToken });
       const publication = {
         code: codeGenerator('PUB'),
         createdAt: creationDate,
@@ -45,6 +44,7 @@ export class PublicationService {
         type: value.type,
         medias: [],
         user: user['_id'],
+        products: [],
       };
       const createdPublication = await this.dataServices.publications.create(
         publication,
@@ -118,6 +118,9 @@ export class PublicationService {
           },
         });
       }
+      await this.dataServices.publications.populateMediasAndColorsOptions(
+        result,
+      );
       const total = result[0].total;
       const publications = result.flatMap((r) => ({
         ...r,
@@ -204,6 +207,70 @@ export class PublicationService {
     } catch (error) {
       throw new HttpException(
         `Error while updating publication. Try again.`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async createFromProduct(
+    value: NewPublicationFromProductDto,
+  ): Promise<Result> {
+    try {
+      const user = await this.dataServices.users.findOne(value.user, 'code');
+      if (!user) {
+        return fail({
+          code: HttpStatus.NOT_FOUND,
+          message: 'User not found',
+          error: 'Not found resource',
+        });
+      }
+      const product = await this.dataServices.product.findOne(
+        value.product,
+        'code',
+      );
+      if (!product) {
+        return fail({
+          code: HttpStatus.NOT_FOUND,
+          message: 'User not found',
+          error: 'Not found resource',
+        });
+      }
+      const creationDate = new Date();
+      const publication = {
+        code: codeGenerator('PUB'),
+        createdAt: creationDate,
+        lastUpdatedAt: creationDate,
+        week: getWeekNumber(creationDate),
+        month: creationDate.getMonth() + 1,
+        year: creationDate.getFullYear(),
+        label: value.label || '',
+        description: value.description || '',
+        price: value.price || null,
+        type: value.type,
+        medias: [],
+        user: user['_id'],
+        products: [product['_id']],
+      };
+      const createdPublication = await this.dataServices.publications.create(
+        publication,
+      );
+      await this.dataServices.product.linkPublicationToProduct(
+        product.code,
+        createdPublication['_id'],
+      );
+      await this.dataServices.users.linkPublicationToUser(
+        user.code,
+        createdPublication['_id'],
+      );
+      return succeed({
+        code: HttpStatus.CREATED,
+        data: {
+          code: publication.code,
+        },
+      });
+    } catch (error) {
+      throw new HttpException(
+        `Error while creating new publication. Try again.`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

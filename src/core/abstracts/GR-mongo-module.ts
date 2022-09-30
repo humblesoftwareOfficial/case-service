@@ -13,6 +13,8 @@ import {
 import { User, UserSchema } from '../../users/users.entity';
 import { IDataServices } from '../generics/data.services.abstract';
 import { MongoDataServices } from './GR-mongo-data-services';
+import { Product, ProductSchema } from '../../products/products.entity';
+import { StockProvisioning, StockProvisioningSchema } from '../../products/stock-provisioning.entity';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { MongoDataServices } from './GR-mongo-data-services';
       { name: Media.name, schema: MediaSchema },
       { name: Section.name, schema: SectionSchema },
       { name: Category.name, schema: CategorySchema },
+      { name: Product.name, schema: ProductSchema },
+      { name: StockProvisioning.name, schema: StockProvisioningSchema },
     ]),
     // MongooseModule.forRoot(DATA_BASE_CONFIGURATION.mongoConnectionString),
     MongooseModule.forRootAsync({

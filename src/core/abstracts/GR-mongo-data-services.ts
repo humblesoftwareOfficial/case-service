@@ -17,6 +17,10 @@ import { Category, CategoryDocument } from '../../categories/categories.entity';
 import { Section, SectionDocument } from '../../sections/sections.entity';
 import { CategoryRepository } from '../repositories/category.repository';
 import { SectionRepository } from '../repositories/section.repository';
+import { Product, ProductDocument } from 'src/products/products.entity';
+import { ProductRepository } from '../repositories/product.repository';
+import { ProvisioningRepository } from '../repositories/provisioning.repository';
+import { StockProvisioning, StockProvisioningDocument } from '../../products/stock-provisioning.entity';
 
 @Injectable()
 export class MongoDataServices
@@ -27,6 +31,8 @@ export class MongoDataServices
   medias: MediaRepository<Media>;
   section: SectionRepository<Section>;
   category: CategoryRepository<Category>;
+  product: ProductRepository<Product>;
+  provisioning: ProvisioningRepository<StockProvisioning>;
 
   constructor(
     @InjectModel(User.name)
@@ -40,6 +46,10 @@ export class MongoDataServices
     private sectionRepository: Model<SectionDocument | Section>,
     @InjectModel(Category.name)
     private categoryRepository: Model<CategoryDocument | Category>,
+    @InjectModel(Product.name)
+    private productRepository: Model<ProductDocument | Product>,
+    @InjectModel(StockProvisioning.name)
+    private provisioningRepository: Model<StockProvisioningDocument | StockProvisioning>,
   ) {}
 
   onApplicationBootstrap() {
@@ -55,6 +65,13 @@ export class MongoDataServices
     this.category = new CategoryRepository<Category>(this.categoryRepository, [
       'section',
       'publications',
+    ]);
+    this.product = new ProductRepository<Product>(this.productRepository, [
+      'user',
+    ]);
+    this.provisioning = new ProvisioningRepository<StockProvisioning>(this.provisioningRepository, [
+      'user',
+      'product',
     ]);
   }
 }

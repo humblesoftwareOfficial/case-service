@@ -93,6 +93,7 @@ export class UserRepository<T>
       },
     }).exec();
   }
+
   subscribeAccount(idUser: Types.ObjectId, accountSubscribedId: Types.ObjectId): Promise<T> {
     return this._repository.findByIdAndUpdate(idUser, {
       $addToSet: {
@@ -108,6 +109,7 @@ export class UserRepository<T>
       },
     }).exec();
   }
+  
   unSubscribeAccount(idUser: Types.ObjectId, accountSubscribedId: Types.ObjectId): Promise<T> {
     return this._repository.findByIdAndUpdate(idUser, {
       $pull: {

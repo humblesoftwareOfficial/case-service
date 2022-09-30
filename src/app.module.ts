@@ -12,6 +12,7 @@ import { PublicationModule } from './publication/publication.module';
 import { UsersModule } from './users/users.module';
 import { SectionsModule } from './sections/sections.module';
 import { CategoriesModule } from './categories/categories.module';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { CategoriesModule } from './categories/categories.module';
     DataServicesModule,
     SectionsModule,
     CategoriesModule,
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

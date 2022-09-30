@@ -12,6 +12,10 @@ import { SectionRepository } from '../repositories/section.repository';
 import { CategoryRepository } from '../repositories/category.repository';
 import { Section } from '../../sections/sections.entity';
 import { Category } from '../../categories/categories.entity';
+import { ProductRepository } from '../repositories/product.repository';
+import { Product } from '../../products/products.entity';
+import { ProvisioningRepository } from '../repositories/provisioning.repository';
+import { StockProvisioning } from '../../products/stock-provisioning.entity';
 
 export abstract class IDataServices {
   abstract users: UserRepository<User | UserDocument>;
@@ -23,4 +27,8 @@ export abstract class IDataServices {
   abstract section: SectionRepository<Section>;
 
   abstract category: CategoryRepository<Category>;
+
+  abstract product: ProductRepository<Product>;
+
+  abstract provisioning: ProvisioningRepository<StockProvisioning>;
 }

@@ -16,6 +16,30 @@ const PopulateOptions = [
     select: 'code url description type price createdAt week month year -_id',
   },
 ];
+
+const PopulateProductOptions = [
+  {
+    path: 'product.colors.media',
+    select: '-_id code url type',
+    model: 'Media',
+  },
+  {
+    path: 'product.medias',
+    select: '-_id code url type',
+    model: 'Media',
+  },
+  {
+    path: 'product.section',
+    select: '-_id code label description',
+    model: 'Section',
+  },
+  {
+    path: 'product.category',
+    select: '-_id code label description',
+    model: 'Category',
+  },
+];
+
 export class PublicationRepository<T>
   extends MongoGenericRepository<T>
   implements IPublicationRepository<T>
@@ -148,8 +172,22 @@ export class PublicationRepository<T>
           },
         },
         {
+          $lookup: {
+            from: 'products',
+            localField: 'data.products',
+            foreignField: '_id',
+            as: 'data.products',
+          },
+        },
+        {
           $unwind: {
             path: '$data.user',
+          },
+        },
+        {
+          $unwind: {
+            path: '$data.products',
+            preserveNullAndEmptyArrays: true,
           },
         },
         {
@@ -195,6 +233,7 @@ export class PublicationRepository<T>
               },
             },
             medias: '$data.medias',
+            product: '$data.products',
           },
         },
         {
@@ -203,9 +242,18 @@ export class PublicationRepository<T>
             'medias.entity': 0,
             'medias.onModel': 0,
             'medias.__v': 0,
+            'product._id': 0,
+            'product.__v': 0,
+            'product.publications': 0,
+            'product.user': 0,
+            'product.priceHistory': 0,
           },
         },
       ])
       .exec();
+  }
+
+  populateMediasAndColorsOptions(value: any): Promise<any> {
+    return this._repository.populate(value, PopulateProductOptions);
   }
 }

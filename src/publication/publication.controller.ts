@@ -10,7 +10,7 @@ import {
 } from '@nestjs/swagger';
 import { PublicationService } from './publication.service';
 import { Publication } from './publication.entity';
-import { NewPublicationDto, PublicationsListDto, UpdatePublicationDto } from './publication.dto';
+import { NewPublicationDto, NewPublicationFromProductDto, PublicationsListDto, UpdatePublicationDto } from './publication.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.gard';
 import { isValidPublicationCode } from './publication.helper';
 import { InvalidCodeException } from '../exceptions/invalicode.exception.filter';
@@ -95,5 +95,20 @@ export class PublicationController {
       throw new InvalidCodeException('Publication code is incorrect!');
     }
     return this.service.update(code, value);
+  }
+
+  @ApiCreatedResponse({
+    description: 'New publication successfully created.',
+    type: Publication,
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error occured.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request.',
+  })
+  @Post('/new/fromproduct')
+  async createFromProduct(@Body() value: NewPublicationFromProductDto) {
+    return this.service.createFromProduct(value);
   }
 }

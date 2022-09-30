@@ -3,6 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { EPublicationType } from 'src/core/entities/Publication';
 import { Media } from 'src/medias/medias.entity';
+import { Product } from 'src/products/products.entity';
 import { User } from 'src/users/users.entity';
 
 import { DefaultAttributes } from '../shared/default-collection-attributes.entity';
@@ -43,6 +44,9 @@ export class Publication extends DefaultAttributes {
 
   @Prop({ required: true, type: Number })
   year: number;
+
+  @Prop({ type: [Types.ObjectId], ref: 'Product', default: []})
+  products: Product[] | Types.ObjectId[];
 }
 
 export const PublicationSchema = SchemaFactory.createForClass(Publication);
