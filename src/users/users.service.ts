@@ -9,7 +9,7 @@ import { sendMessage } from 'src/extras/send.sms';
 import { fail, Result, succeed } from '../config/htt-response';
 import { codeGenerator, ErrorMessages, generateDefaultPassword } from '../shared/utils';
 import { FollowAccountDto, NewUserDto, UnFollowAccountDto, UpdatePushTokenDto, UpdateUserDto, UserPhoneDto } from './users.dto';
-import { IFindUserbyEmailOrPhone, IUserTokenVerification } from './users.helper';
+import { EAccountType, IFindUserbyEmailOrPhone, IUserTokenVerification } from './users.helper';
 import { getDefaultUserInfos } from './users.helper';
 
 @Injectable()
@@ -61,6 +61,7 @@ export class UsersService {
         pseudo: newUser.pseudo,
         followers: [],
         subscriptions: [],
+        accountType: newUser.accountType || EAccountType.DEFAULT,
       };
       const createdUser = await this.dataServices.users.create(user);
       const payload = {
@@ -180,6 +181,9 @@ export class UsersService {
         ...(value.gender && {
           gender: value.gender,
         }),
+        ...(value.accountType && {
+          accountType: value.accountType,
+        }),
         ...(value.password && {
           password: await bcrypt.hash(value.password, salt),
         }),
@@ -207,7 +211,7 @@ export class UsersService {
       }
       return succeed({
         code: HttpStatus.OK,
-        data: await this.dataServices.users.findOne(code, '-_id -__v -password -publications'),
+        data: await this.dataServices.users.findOne(code, '-_id -__v -password -publications -followers -subscriptions'),
       });
     } catch (error) {
       console.log({ error })

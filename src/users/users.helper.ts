@@ -40,3 +40,10 @@ export interface IUserTokenVerification {
   id: string;
   code: string;
 }
+
+export enum EAccountType {
+  DEFAULT = 'DEFAULT',
+  SELLER = 'SELLER',
+  CREATOR = 'CREATOR',
+  SELLER_CREATOR = 'SELLER_CREATOR',
+}

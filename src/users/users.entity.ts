@@ -5,9 +5,9 @@ import { EUserGender } from 'src/core/entities/User';
 
 import { Publication } from '../publication/publication.entity';
 import { DefaultAttributes } from '../shared/default-collection-attributes.entity';
+import { EAccountType } from './users.helper';
 
 export type UserDocument = User & Document;
-
 
 @Schema()
 export class User extends DefaultAttributes {
@@ -31,6 +31,9 @@ export class User extends DefaultAttributes {
 
   @Prop({ type: String, enum: EUserGender, default: EUserGender.OTHER })
   gender: string;
+
+  @Prop({ type: String, enum: EAccountType, default: EAccountType.DEFAULT })
+  accountType: string;
 
   @Prop({ type: String, default: '' })
   address: string;

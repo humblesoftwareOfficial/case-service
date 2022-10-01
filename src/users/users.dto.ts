@@ -3,7 +3,7 @@ import { IsArray, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, Validate } 
 import { EUserGender } from 'src/core/entities/User';
 
 import { URLValidator } from '../shared/url.helper';
-import { UserCodeValidator } from './users.helper';
+import { EAccountType, UserCodeValidator } from './users.helper';
 
 export class NewUserDto {
   @IsNotEmpty({ message: 'User first name is required.' })
@@ -20,6 +20,13 @@ export class NewUserDto {
     message: 'User gender is required!',
   })
   gender: EUserGender;
+
+  @IsOptional()
+  @IsNotEmpty({ message: 'Account type cannot be empty.' })
+  @IsEnum(EAccountType, {
+    message: 'User account type is required!',
+  })
+  accountType: EAccountType;
 
   @IsOptional()
   @IsEmail({}, { message: 'Invalid User email.' })
@@ -91,6 +98,13 @@ export class UpdateUserDto {
     message: 'User gender is required!',
   })
   gender: EUserGender;
+
+  @IsOptional()
+  @IsNotEmpty({ message: 'Account type cannot be empty.' })
+  @IsEnum(EAccountType, {
+    message: 'User account type is required!',
+  })
+  accountType: EAccountType;
 
   @IsOptional()
   @IsEmail({}, { message: 'Invalid User email.' })

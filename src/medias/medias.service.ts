@@ -72,6 +72,7 @@ export class MediasService {
         },
       });
     } catch (error) {
+      console.log({ error });
       throw new HttpException(
         `Error while creating new media. Try again.`,
         HttpStatus.INTERNAL_SERVER_ERROR,
