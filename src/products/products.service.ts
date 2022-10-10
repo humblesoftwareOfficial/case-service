@@ -52,6 +52,7 @@ export class ProductsService {
         label: value.label,
         description: value.description,
         price: value.price,
+        devise: value.devise,
         stock: {
           ...value.stock,
           expirationDate: value.stock.expirationDate

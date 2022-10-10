@@ -50,6 +50,11 @@ export class NewProductDto {
 
   @ApiProperty({ required: false })
   @IsOptional()
+  @IsString({ message: "Decise must be string" })
+  devise: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
   @Type(() => Boolean)
   isInPromotion: boolean;
 

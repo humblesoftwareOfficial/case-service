@@ -33,6 +33,7 @@ export class ProductEntity extends DefaultAttributesEntity {
   label: string;
   description: string;
   price: number;
+  devise: string;
   priceHistory: PriceHistoryEntity[];
   colors: ProductColorEntity[];
   stock: StockEntity;

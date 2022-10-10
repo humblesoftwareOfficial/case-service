@@ -27,6 +27,9 @@ export class Product extends DefaultAttributes {
   @Prop({ type: Number, required: true })
   price: number;
 
+  @Prop({ type: String, default: "" })
+  devise: string;
+
   @Prop({ type: [], default: [] })
   priceHistory: PriceHistory[];
 

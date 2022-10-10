@@ -12,7 +12,7 @@ import { Section } from './sections.entity';
 import { SectionsService } from './sections.service';
 
 @ApiTags('Sections')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @Controller('sections')
 export class SectionsController {
   constructor(private service: SectionsService) {}
@@ -33,6 +33,7 @@ export class SectionsController {
     return this.service.getSections();
   }
 
+  @UseGuards(JwtAuthGuard)
   @ApiCreatedResponse({
     description: 'Sections(s) created.',
     type: Section,

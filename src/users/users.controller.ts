@@ -83,6 +83,7 @@ export class UsersController {
     return this.service.updatePushToken(value);
   }
 
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({
     description: 'User successfully updated.',
     type: User,

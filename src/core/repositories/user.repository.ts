@@ -78,6 +78,7 @@ export class UserRepository<T>
           gender: 1,
           email: 1,
           pseudo: 1,
+          accountType: 1,
           publications: { $cond: { if: { $isArray: "$publications" }, then: { $size: "$publications" }, else: 0 } },
           followers: { $cond: { if: { $isArray: "$followers" }, then: { $size: "$followers" }, else: 0 } },
           subscriptions: { $cond: { if: { $isArray: "$subscriptions" }, then: { $size: "$subscriptions" }, else: 0 } }

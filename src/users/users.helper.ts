@@ -29,6 +29,7 @@ export const getDefaultUserInfos = (user: User) => ({
   phone: user?.phone,
   push_tokens: user.push_tokens,
   profile_picture: user?.profile_picture,
+  accountType: user?.accountType
 });
 
 export interface IFindUserbyEmailOrPhone {
