@@ -1,9 +1,11 @@
 /* eslint-disable prettier/prettier */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { Category } from 'src/categories/categories.entity';
 import { EPublicationType } from 'src/core/entities/Publication';
 import { Media } from 'src/medias/medias.entity';
 import { Product } from 'src/products/products.entity';
+import { Section } from 'src/sections/sections.entity';
 import { User } from 'src/users/users.entity';
 
 import { DefaultAttributes } from '../shared/default-collection-attributes.entity';
@@ -47,6 +49,15 @@ export class Publication extends DefaultAttributes {
 
   @Prop({ type: [Types.ObjectId], ref: 'Product', default: []})
   products: Product[] | Types.ObjectId[];
+
+  @Prop({ required: true, type: Types.ObjectId, ref: 'Section', index: true })
+  section: Section | Types.ObjectId;
+
+  @Prop({ required: true, type: Types.ObjectId, ref: 'Category', index: true })
+  category: Category | Types.ObjectId;
+
+  @Prop({ type: [String], default: [],})
+  tags: string[];
 }
 
 export const PublicationSchema = SchemaFactory.createForClass(Publication);

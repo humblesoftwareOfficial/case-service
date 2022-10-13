@@ -1,7 +1,9 @@
 /* eslint-disable prettier/prettier */
+import { CategoryEntity } from './Category';
 import { DefaultAttributesEntity } from './DefaultAttributes';
 import { MediaEntity } from './Media';
 import { ProductEntity } from './Product';
+import { SectionEntity } from './Section';
 import { UserEntity } from './User';
 
 export enum EPublicationType {
@@ -22,4 +24,7 @@ export class PublicationEntity extends DefaultAttributesEntity {
   month: number;
   year: number;
   products: ProductEntity[];
+  section: SectionEntity;
+  category: CategoryEntity;
+  tags: string[];
 }

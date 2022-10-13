@@ -45,6 +45,9 @@ export class PublicationService {
         medias: [],
         user: user['_id'],
         products: [],
+        category: null,
+        section: null,
+        tags: [],
       };
       const createdPublication = await this.dataServices.publications.create(
         publication,
@@ -226,7 +229,7 @@ export class PublicationService {
       }
       const product = await this.dataServices.product.findOne(
         value.product,
-        'code',
+        'code category section',
       );
       if (!product) {
         return fail({
@@ -250,6 +253,9 @@ export class PublicationService {
         medias: [],
         user: user['_id'],
         products: [product['_id']],
+        section: product.section,
+        category: product.category,
+        tags: product.tags,
       };
       const createdPublication = await this.dataServices.publications.create(
         publication,

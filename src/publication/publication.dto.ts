@@ -2,6 +2,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  IsBoolean,
   IsEnum,
   IsInt,
   IsNotEmpty,
@@ -91,6 +92,11 @@ export class PublicationsListDto extends PaginationDto {
   @IsNotEmpty({ message: 'User value cannot be empty.' })
   @Validate(UserCodeValidator)
   user: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional({})
+  @IsBoolean()
+  fromProduct: boolean;
 }
 
 export class UpdatePublicationDto {
