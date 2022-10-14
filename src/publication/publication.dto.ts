@@ -13,11 +13,12 @@ import {
   Validate,
 } from 'class-validator';
 import { ProductCodeValidator } from 'src/products/product.helper';
+import { SectionCodeValidator } from 'src/sections/section.helper';
 
 import { EPublicationType } from '../core/entities/Publication';
 import { PaginationDto } from '../shared/pagination.dto';
 import { UserCodeValidator } from '../users/users.helper';
-import { PublicationCodeValidator } from './publication.helper';
+import { PublicationCodeValidator, PublicationsCodesValidator } from './publication.helper';
 
 export class NewPublicationDto {
   @ApiProperty({ required: false })
@@ -97,6 +98,17 @@ export class PublicationsListDto extends PaginationDto {
   @IsOptional({})
   @IsBoolean()
   fromProduct: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional({})
+  @IsNotEmpty({ message: 'Section cannot be empty.' })
+  @Validate(SectionCodeValidator)
+  section: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Validate(PublicationsCodesValidator)
+  ignorePublications: string[];
 }
 
 export class UpdatePublicationDto {

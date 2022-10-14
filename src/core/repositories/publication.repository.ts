@@ -92,6 +92,9 @@ export class PublicationRepository<T>
             ...(filter.user && {
               user: filter.user,
             }),
+            ...(filter.section && {
+              section: filter.section,
+            }),
             ...(priceFilter && {
               price: priceFilter,
             }),
@@ -111,6 +114,11 @@ export class PublicationRepository<T>
                 ],
               }),
             isDeleted: false,
+            ...(filter.ignorePublications?.length && {
+              code: {
+                '$nin': filter.ignorePublications
+              }
+            }),
           },
         },
         {

@@ -21,6 +21,24 @@ export class PublicationCodeValidator implements ValidatorConstraintInterface {
   }
 }
 
+@ValidatorConstraint({ name: 'PublicationsCodesValidator' })
+export class PublicationsCodesValidator
+  implements ValidatorConstraintInterface
+{
+  validate(codes: string[], _args: ValidationArguments) {
+    let isValid = true;
+    for (const code of codes) {
+      if (!isValidPublicationCode(code)) isValid = false;
+    }
+    return isValid;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  defaultMessage(_args: ValidationArguments) {
+    return 'At least on active publication code you provided is incorrect.';
+  }
+}
+
 export interface IPublicationsListFilter {
   skip: number;
   limit: number;
@@ -29,6 +47,8 @@ export interface IPublicationsListFilter {
   month?: number;
   year?: number;
   user?: Types.ObjectId;
+  section?: Types.ObjectId;
   searchTerm?: string;
   fromProduct?: boolean;
+  ignorePublications?: string[];
 }

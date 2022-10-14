@@ -97,6 +97,7 @@ export class PublicationService {
     try {
       const skip = (value.page - 1) * value.limit;
       let user = null;
+      let section = null;
       if (value.user) {
         user = await this.dataServices.users.findOne(value.user, '_id code');
         if (!user) {
@@ -107,10 +108,24 @@ export class PublicationService {
           });
         }
       }
+      if (value.section) {
+        section = await this.dataServices.section.findOne(
+          value.section,
+          '_id code',
+        );
+        if (!section) {
+          return fail({
+            code: HttpStatus.NOT_FOUND,
+            message: 'Section not found',
+            error: 'Not found resource!',
+          });
+        }
+      }
       const result = await this.dataServices.publications.getPublicationsList({
         ...value,
         skip,
         user: user ? user['_id'] : undefined,
+        section: section ? section['_id'] : undefined,
       });
       if (!result?.length) {
         return succeed({

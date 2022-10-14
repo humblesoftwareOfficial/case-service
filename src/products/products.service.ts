@@ -329,7 +329,7 @@ export class ProductsService {
     for (let i = 0; i < medias.length; i++) {
       const creationDate = new Date();
       const newMedia = {
-        ...medias[0],
+        ...medias[i],
         code: codeGenerator('MED'),
         createdAt: creationDate,
         lastUpdatedAt: creationDate,
