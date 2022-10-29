@@ -10,6 +10,7 @@ import {
   ProductColorDto,
   ProductsListDto,
   ProductStockProvisioningDto,
+  UpdateProductDto,
 } from './product.dto';
 import { Product } from './products.entity';
 
@@ -222,8 +223,6 @@ export class ProductsService {
           error: 'Not found resource',
         });
       }
-      console.log({ user });
-      console.log({ product });
       const userId = user['_id'].toString();
       const productOwner = product.user.toString();
       if (userId !== productOwner) {
@@ -234,11 +233,11 @@ export class ProductsService {
         });
       }
       const creationDate = new Date();
-      const date = stringToDate(provision.date);
+      const date = creationDate; //stringToDate(provision.date);
       const week = getWeekNumber(date);
       const month = date.getMonth() + 1;
       const year = date.getFullYear();
-      const newStockValue = product.stock.quantity + provision.value;
+      const newStockValue = provision.value; //product.stock.quantity + provision.value;
       const newProvision = {
         code: codeGenerator('SPV'),
         createdAt: creationDate,
@@ -261,7 +260,7 @@ export class ProductsService {
           ...product.stock,
           quantity: newStockValue,
         },
-        product: product['_id'],
+        product: product.code,
         provisionId: createdProvisioning['_id'],
       });
       return succeed({
@@ -270,13 +269,77 @@ export class ProductsService {
           code: product.code,
           stock: {
             ...product.stock,
-            quantity: newProvision.newStockValue,
+            quantity: newStockValue,
           },
         },
       });
     } catch (error) {
       throw new HttpException(
         'Error while provisioning product',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async update(code: string, value: UpdateProductDto): Promise<Result> {
+    try {
+      const user = await this.dataServices.users.findOne(
+        value.user,
+        '_id code',
+      );
+      if (!user) {
+        return fail({
+          code: HttpStatus.NOT_FOUND,
+          message: 'User not found',
+          error: 'Not found resource',
+        });
+      }
+      const product = await this.dataServices.product.findOne(
+        code,
+        'code user stock label description isInPromotion price',
+      );
+      if (!product) {
+        return fail({
+          code: HttpStatus.NOT_FOUND,
+          message: 'Product not found',
+          error: 'Not found resource',
+        });
+      }
+      const userId = user['_id'].toString();
+      const productOwner = product.user.toString();
+      if (userId !== productOwner) {
+        return fail({
+          code: HttpStatus.UNAUTHORIZED,
+          message: 'Not authorized action',
+          error: 'Not authorized action',
+        });
+      }
+      const updateDate = new Date();
+      const updateValue = {
+        lastUpdatedAt: updateDate,
+        label: value.label || product.label,
+        description: value.description || product.description,
+        price: value.price || product.price,
+        isInPromotion: value.isInPromotion || false,
+        ...(value.price !== null &&
+          value.price !== undefined && {
+            $addToSet: {
+              priceHistory: {
+                date: updateDate,
+                price: value.price,
+                week: getWeekNumber(updateDate),
+                month: updateDate.getMonth() + 1,
+                year: updateDate.getFullYear(),
+                isInPromotion: value.isInPromotion || false,
+              },
+            },
+          }),
+      };
+      await this.dataServices.product.update(code, updateValue);
+      return await this.findOne(code);
+    } catch (error) {
+      throw new HttpException(
+        'Error while updating product',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

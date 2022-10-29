@@ -141,9 +141,9 @@ export class ProductStockProvisioningDto {
   // @Min(1)
   value: number;
 
-  @IsNotEmpty({ message: 'Date value is required.' })
-  @Validate(IsValidDate)
-  date: string;
+  // @IsNotEmpty({ message: 'Date value is required.' })
+  // @Validate(IsValidDate)
+  // date: string;
 
   @IsNotEmpty({ message: 'User performing action is required.' })
   @Validate(UserCodeValidator)
@@ -152,4 +152,41 @@ export class ProductStockProvisioningDto {
   @IsNotEmpty({ message: 'product which is provisiong is required.' })
   @Validate(ProductCodeValidator)
   product: string;
+}
+
+export class UpdateProductDto {
+  @IsNotEmpty({ message: "User is required." })
+  @Validate(UserCodeValidator)
+  user: string;
+
+  // @IsNotEmpty({ message: "Product is required." })
+  // @Validate(ProductCodeValidator)
+  // code: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsNotEmpty({ message: "Product's name is required." })
+  @IsString({ message: "Product's name must be string" })
+  label: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString({ message: "Product's description must be string" })
+  description?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  price: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString({ message: "Decise must be string" })
+  devise: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Boolean)
+  isInPromotion: boolean;
 }

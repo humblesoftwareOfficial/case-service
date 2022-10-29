@@ -128,6 +128,7 @@ export class ProductRepository<T>
             'medias.code': 1,
             'medias.url': 1,
             'medias.type': 1,
+            publications: { $cond: { if: { $isArray: "$publications" }, then: { $size: "$publications" }, else: 0} },
           },
         },
       ])
@@ -296,6 +297,7 @@ export class ProductRepository<T>
             'user.pseudo': '$data.user.pseudo',
             medias: '$data.medias',
             colors: '$data.colors',
+            publications: { $cond: { if: { $isArray: "$data.publications" }, then: { $size: "$data.publications" }, else: 0} },
           },
         },
       ])

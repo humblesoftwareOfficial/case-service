@@ -36,7 +36,7 @@ export interface IProductionListFilter {
 }
 
 export interface IProductProvisioning {
-  product: Types.ObjectId;
+  product: string;
   newStock: Stock;
   provisionId: Types.ObjectId;
 }

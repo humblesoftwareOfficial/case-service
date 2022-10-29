@@ -49,9 +49,124 @@ export class PublicationRepository<T>
   }
 
   getPublicationInfoByCode(code: string): Promise<any> {
+    // return this._repository
+    //   .findOne({ code }, '-_id -__v', { lean: true })
+    //   .populate(PopulateOptions)
+    //   // .populate(PopulateProductOptions)
+    //   .exec();
     return this._repository
-      .findOne({ code }, '-_id -__v', { lean: true })
-      .populate(PopulateOptions)
+      .aggregate([
+        {
+          $match: {
+            code,
+          },
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'user',
+            foreignField: '_id',
+            as: 'user',
+          },
+        },
+        {
+          $lookup: {
+            from: 'media',
+            localField: 'medias',
+            foreignField: '_id',
+            as: 'medias',
+          },
+        },
+        {
+          $lookup: {
+            from: 'products',
+            localField: 'products',
+            foreignField: '_id',
+            as: 'products',
+          },
+        },
+        {
+          $unwind: {
+            path: '$user',
+          },
+        },
+        {
+          $unwind: {
+            path: '$products',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            code: 1,
+            createdAt: 1,
+            lastUpdatedAt: 1,
+            label: 1,
+            description: 1,
+            price: 1,
+            type: 1,
+            week: 1,
+            month: 1,
+            year: 1,
+            user: {
+              code: '$user.code',
+              firstName: '$user.firstName',
+              lastName: '$user.lastName',
+              profile_picture: '$user.profile_picture',
+              phone: '$user.phone',
+              publications: {
+                $cond: {
+                  if: {
+                    $isArray: '$user.publications',
+                  },
+                  then: {
+                    $size: '$user.publications',
+                  },
+                  else: 0,
+                },
+              },
+              followers: {
+                $cond: {
+                  if: {
+                    $isArray: '$user.followers',
+                  },
+                  then: {
+                    $size: '$user.followers',
+                  },
+                  else: 0,
+                },
+              },
+              subscriptions: {
+                $cond: {
+                  if: {
+                    $isArray: '$user.subscriptions',
+                  },
+                  then: {
+                    $size: '$user.subscriptions',
+                  },
+                  else: 0,
+                },
+              },
+            },
+            medias: 1,
+            product: '$products',
+          },
+        },
+        {
+          $project: {
+            'medias._id': 0,
+            'medias.entity': 0,
+            'medias.onModel': 0,
+            'medias.__v': 0,
+            'product._id': 0,
+            'product.__v': 0,
+            'product.publications': 0,
+            'product.user': 0,
+            'product.priceHistory': 0,
+          },
+        },
+      ])
       .exec();
   }
 
@@ -116,8 +231,8 @@ export class PublicationRepository<T>
             isDeleted: false,
             ...(filter.ignorePublications?.length && {
               code: {
-                '$nin': filter.ignorePublications
-              }
+                $nin: filter.ignorePublications,
+              },
             }),
           },
         },

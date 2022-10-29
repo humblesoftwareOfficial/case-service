@@ -74,16 +74,19 @@ export class PublicationService {
     try {
       const publication =
         await this.dataServices.publications.getPublicationInfoByCode(code);
-      if (!publication) {
+      if (!publication?.length) {
         return fail({
           code: HttpStatus.NOT_FOUND,
           message: 'Publication not found',
           error: 'Not found resource',
         });
       }
+      await this.dataServices.publications.populateMediasAndColorsOptions(
+        publication,
+      );
       return succeed({
         code: HttpStatus.OK,
-        data: publication,
+        data: publication[0] || null,
       });
     } catch (error) {
       throw new HttpException(
@@ -244,7 +247,7 @@ export class PublicationService {
       }
       const product = await this.dataServices.product.findOne(
         value.product,
-        'code category section',
+        'code category section user',
       );
       if (!product) {
         return fail({
@@ -254,6 +257,16 @@ export class PublicationService {
         });
       }
       const creationDate = new Date();
+      const userId = user['_id'];
+      const productOwner = product.user;
+      if (userId?.toString() !== productOwner?.toString()) {
+        //Add this to logs
+        return fail({
+          code: HttpStatus.BAD_REQUEST,
+          message: 'Bad request',
+          error: 'Bad request',
+        });
+      }
       const publication = {
         code: codeGenerator('PUB'),
         createdAt: creationDate,

@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Param, Get, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Param,
+  Get,
+  UseGuards,
+  Patch,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -13,6 +21,7 @@ import {
   NewProductDto,
   ProductsListDto,
   ProductStockProvisioningDto,
+  UpdateProductDto,
 } from './product.dto';
 import { isValidProductCode } from './product.helper';
 import { Product } from './products.entity';
@@ -89,5 +98,23 @@ export class ProductsController {
   @Post('/provisioning')
   async provisioning(@Body() value: ProductStockProvisioningDto) {
     return this.service.provisioning(value);
+  }
+
+  @ApiCreatedResponse({
+    description: 'Product successfully updated.',
+    type: Product,
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error occured.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request.',
+  })
+  @Patch(':code')
+  async update(@Param('code') code: string, @Body() value: UpdateProductDto) {
+    if (!isValidProductCode(code)) {
+      throw new InvalidCodeException('Product code is incorrect!');
+    }
+    return this.service.update(code, value);
   }
 }
