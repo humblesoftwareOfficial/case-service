@@ -12,6 +12,7 @@ import { codeGenerator, ErrorMessages } from '../shared/utils';
 import { getWeekNumber } from '../shared/date.helpers';
 import { JwtService } from '@nestjs/jwt';
 import { Publication } from './publication.entity';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class PublicationService {
@@ -309,6 +310,36 @@ export class PublicationService {
         `Error while creating new publication. Try again.`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    }
+  }
+
+  async __registerPublicationView(
+    userId: Types.ObjectId,
+    publicationId: Types.ObjectId,
+    publicationCode: string,
+  ) {
+    try {
+      const creationDate = new Date();
+      const publicationView = {
+        code: codeGenerator('PVI'),
+        createdAt: creationDate,
+        lastUpdatedAt: creationDate,
+        week: getWeekNumber(creationDate),
+        month: creationDate.getMonth() + 1,
+        year: creationDate.getFullYear(),
+        user: userId,
+        publication: publicationId,
+        publicationFrom: null, //publicationFrom ? publicationFrom['_id'] :
+        isInPromotion: false,
+      };
+      const createdViewPublication =
+        await this.dataServices.publicationView.create(publicationView);
+      await this.dataServices.publications.addNewView(
+        publicationCode,
+        createdViewPublication['_id'],
+      );
+    } catch (error) {
+      // console.log({ error });
     }
   }
 }

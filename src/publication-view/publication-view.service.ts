@@ -45,8 +45,6 @@ export class PublicationViewService {
           });
         }
       }
-      console.log(user['_id']);
-      console.log(publication['_id']);
       const creationDate = new Date();
       const publicationView = {
         code: codeGenerator('PVI'),
@@ -60,7 +58,6 @@ export class PublicationViewService {
         publicationFrom: publicationFrom ? publicationFrom['_id'] : null,
         isInPromotion: false,
       };
-      console.log({ publicationView });
       const createdViewPublication =
         await this.dataServices.publicationView.create(publicationView);
       await this.dataServices.publications.addNewView(
@@ -84,18 +81,4 @@ export class PublicationViewService {
       );
     }
   }
-
-  //   async __registerPublicationView(
-  //     userId: Types.ObjectId,
-  //     value: NewPublicationViewDto,
-  //   ) {
-  //     // const publication = await this.dataServices.users.findOne(value.user, 'code');
-  //     // if (!user) {
-  //     //   return fail({
-  //     //     code: HttpStatus.NOT_FOUND,
-  //     //     message: 'User not found',
-  //     //     error: 'Not found resource',
-  //     //   });
-  //     // }
-  //   }
 }
