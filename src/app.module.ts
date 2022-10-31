@@ -10,6 +10,10 @@ import { MediasModule } from './medias/medias.module';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { PublicationModule } from './publication/publication.module';
 import { UsersModule } from './users/users.module';
+import { SectionsModule } from './sections/sections.module';
+import { CategoriesModule } from './categories/categories.module';
+import { ProductsModule } from './products/products.module';
+import { PublicationViewModule } from './publication-view/publication-view.module';
 
 @Module({
   imports: [
@@ -28,6 +32,10 @@ import { UsersModule } from './users/users.module';
     PublicationModule,
     MediasModule,
     DataServicesModule,
+    SectionsModule,
+    CategoriesModule,
+    ProductsModule,
+    PublicationViewModule,
   ],
   controllers: [AppController],
   providers: [AppService],

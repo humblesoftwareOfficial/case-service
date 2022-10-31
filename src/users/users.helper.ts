@@ -1,9 +1,5 @@
 /* eslint-disable prettier/prettier */
-import {
-  ValidationArguments,
-  ValidatorConstraint,
-  ValidatorConstraintInterface,
-} from 'class-validator';
+import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 import { User } from 'src/users/users.entity';
 
 export const isValidUserCode = (code: string) =>
@@ -32,6 +28,8 @@ export const getDefaultUserInfos = (user: User) => ({
   lastUpdatedDate: user?.lastUpdatedAt,
   phone: user?.phone,
   push_tokens: user.push_tokens,
+  profile_picture: user?.profile_picture,
+  accountType: user?.accountType
 });
 
 export interface IFindUserbyEmailOrPhone {
@@ -42,4 +40,11 @@ export interface IFindUserbyEmailOrPhone {
 export interface IUserTokenVerification {
   id: string;
   code: string;
+}
+
+export enum EAccountType {
+  DEFAULT = 'DEFAULT',
+  SELLER = 'SELLER', //COMPTE DE BOUTIQUES VENDEURS COSMETIQUES
+  CREATOR = 'CREATOR', //COMPTE DE SERVICES
+  SELLER_CREATOR = 'SELLER_CREATOR',// COMPTE DE BOUTIQUE COSMETIQUE ET DE SERVICES
 }

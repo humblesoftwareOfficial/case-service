@@ -1,23 +1,28 @@
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-
-import { UsersModule } from '../users/users.module';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { PublicationController } from './publication.controller';
-import { Publication, PublicationSchema } from './publication.entity';
 import { PublicationService } from './publication.service';
+import { DataServicesModule } from '../core/abstracts/GR-data-services-module';
+import { UserInterceptorMiddleware } from '../middlewares/user-interceptor.middleware';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
-  providers: [],
+  providers: [PublicationService],
   controllers: [PublicationController],
-  // imports: [
-  //   MongooseModule.forFeature([
-  //     {
-  //       name: Publication.name,
-  //       schema: PublicationSchema,
-  //     },
-  //   ]),
-  //   UsersModule,
-  // ],
-  exports: [],
+  imports: [
+    DataServicesModule,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async () => ({
+        secret: process.env.JWT_SECRET,
+      }),
+      inject: [ConfigService],
+    }),
+  ],
+  exports: [PublicationService],
 })
-export class PublicationModule {}
+export class PublicationModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(UserInterceptorMiddleware).forRoutes('/publication/new');
+  }
+}

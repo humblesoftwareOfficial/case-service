@@ -5,9 +5,9 @@ import { EUserGender } from 'src/core/entities/User';
 
 import { Publication } from '../publication/publication.entity';
 import { DefaultAttributes } from '../shared/default-collection-attributes.entity';
+import { EAccountType } from './users.helper';
 
 export type UserDocument = User & Document;
-
 
 @Schema()
 export class User extends DefaultAttributes {
@@ -20,6 +20,9 @@ export class User extends DefaultAttributes {
   @Prop({ required: true, type: String, unique: true })
   phone: string;
 
+  @Prop({ required: true, type: String, unique: true })
+  pseudo: string;
+
   @Prop({ type: String, default: '' })
   email: string;
 
@@ -28,6 +31,9 @@ export class User extends DefaultAttributes {
 
   @Prop({ type: String, enum: EUserGender, default: EUserGender.OTHER })
   gender: string;
+
+  @Prop({ type: String, enum: EAccountType, default: EAccountType.DEFAULT })
+  accountType: string;
 
   @Prop({ type: String, default: '' })
   address: string;
@@ -40,6 +46,12 @@ export class User extends DefaultAttributes {
 
   @Prop({ type: [Types.ObjectId], default: [], ref: 'Publication' })
   publications: Publication[];
+
+  @Prop({ type: [Types.ObjectId], default: [], ref: 'User' })
+  followers: User[];
+
+  @Prop({ type: [Types.ObjectId], default: [], ref: 'User' })
+  subscriptions: User[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

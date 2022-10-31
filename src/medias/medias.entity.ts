@@ -15,7 +15,7 @@ export class Media extends DefaultAttributes {
   @Prop({ required: true, type: String })
   url: string;
 
-  @Prop({ required: true, type: String })
+  @Prop({ type: String })
   description: string;
 
   @Prop({ type: Number })
@@ -33,6 +33,15 @@ export class Media extends DefaultAttributes {
 
   @Prop({ required: true, type: Types.ObjectId, refPath: 'onModel' })
   entity: Types.ObjectId;
+
+  @Prop({ required: true, type: Number })
+  week: number;
+
+  @Prop({ required: true, type: Number })
+  month: number;
+
+  @Prop({ required: true, type: Number })
+  year: number;
 }
 
 export const MediaSchema = SchemaFactory.createForClass(Media);

@@ -16,4 +16,7 @@ export class MediaEntity extends DefaultAttributesEntity {
   type: EMediaType;
   onModel: string;
   entity: PublicationEntity;
+  week: number;
+  month: number;
+  year: number;
 }

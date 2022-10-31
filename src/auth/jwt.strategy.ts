@@ -2,6 +2,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+
 import { isValidUserCode } from '../users/users.helper';
 
 @Injectable()
@@ -15,10 +16,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    //console.log({ payload });
     if (!payload.userId || !isValidUserCode(payload.code)) {
       throw new UnauthorizedException();
     }
+    
     return {
       userId: payload.userId,
       code: payload.code,

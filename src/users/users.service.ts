@@ -1,41 +1,36 @@
 /* eslint-disable prettier/prettier */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { Model, Types } from 'mongoose';
 import { EUserGender } from 'src/core/entities/User';
 import { IDataServices } from 'src/core/generics/data.services.abstract';
+import { sendMessage } from 'src/extras/send.sms';
 
 import { fail, Result, succeed } from '../config/htt-response';
 import { codeGenerator, ErrorMessages, generateDefaultPassword } from '../shared/utils';
-import { NewUserDto, UpdatePushTokenDto, UserPhoneDto } from './users.dto';
-import { User, UserDocument } from './users.entity';
-import { IFindUserbyEmailOrPhone, IUserTokenVerification } from './users.helper';
+import { FollowAccountDto, NewUserDto, UnFollowAccountDto, UpdatePushTokenDto, UpdateUserDto, UserPhoneDto } from './users.dto';
+import { EAccountType, IFindUserbyEmailOrPhone, IUserTokenVerification } from './users.helper';
 import { getDefaultUserInfos } from './users.helper';
-
-const PopulateOptionsAuth = [];
 
 @Injectable()
 export class UsersService {
-  // constructor(
-  //   @InjectModel(User.name)
-  //   private readonly model: Model<UserDocument>,
-  // ) {}
-  constructor(private dataServices: IDataServices) {}
+  constructor(private dataServices: IDataServices, private jwtService: JwtService) {}
 
   async findOne(code: string): Promise<Result> {
     try {
-      const user = await this.dataServices.users.findOne(code, '-_id -__v');
-      if (!user) {
+      const user = await this.dataServices.users.getAccountInfos(
+        code
+      );
+      if (!user?.length) {
         return fail({
           code: HttpStatus.NOT_FOUND,
           message: 'User not found',
-          error: "Not found!",
-        })
+          error: 'Not found!',
+        });
       }
       return succeed({
         code: HttpStatus.OK,
-        data: user,
+        data: user[0],
       });
     } catch (error) {
       throw new HttpException(
@@ -59,18 +54,26 @@ export class UsersService {
         gender: newUser.gender || EUserGender.OTHER,
         address: newUser.address,
         push_tokens: newUser.push_tokens || [],
-        profile_picture: "",
+        profile_picture: newUser.profile_picture || '',
         createdAt: new Date(),
         lastUpdatedAt: new Date(),
         publications: [],
+        pseudo: newUser.pseudo,
+        followers: [],
+        subscriptions: [],
+        accountType: newUser.accountType || EAccountType.DEFAULT,
       };
-      console.log({ password });
       const createdUser = await this.dataServices.users.create(user);
-      // await this.model.create(user);
-      console.log(createdUser.firstName);
+      const payload = {
+        userId: createdUser['_id'],
+        code: user.code,
+      };
       return succeed({
         code: HttpStatus.CREATED,
-        data: getDefaultUserInfos(createdUser),
+        data: {
+          ...getDefaultUserInfos(createdUser),
+          access_token: this.jwtService.sign(payload),
+        },
         message: 'User successfully registered.',
       });
     } catch (error) {
@@ -91,7 +94,10 @@ export class UsersService {
 
   async updatePushToken(value: UpdatePushTokenDto): Promise<Result> {
     try {
-      const user = await this.dataServices.users.findOne(value.user, '_id');
+      const user = await this.dataServices.users.updatePushTokens(
+        value.user,
+        value.tokenValue,
+      );
       if (!user) {
         return fail({
           code: HttpStatus.NOT_FOUND,
@@ -99,7 +105,6 @@ export class UsersService {
           error: 'Not found ressource',
         });
       }
-      // await this.__updatePushTokens(user.code, value.tokenValue);
       return succeed({
         code: HttpStatus.OK,
         data: {
@@ -116,20 +121,15 @@ export class UsersService {
 
   async isPhoneNumberRegistered(value: UserPhoneDto): Promise<Result> {
     try {
-      // const user = await this.__findByPhone(value.phone);
-      // if (!user) {
-      //   return fail({
-      //     code: HttpStatus.NOT_FOUND,
-      //     message: 'Not registered!',
-      //     error: '',
-      //   });
-      // }
-      // return succeed({
-      //   code: HttpStatus.OK,
-      //   message: 'Already registred',
-      //   data: {},
-      // });
-      return null;
+      // sendMessage();
+      const user = await this.dataServices.users.findByPhoneNumber(value.phone);
+      return succeed({
+        code: HttpStatus.OK,
+        data: {
+          isRegistered: user ? true : false,
+          phone: value.phone,
+        }
+      });
     } catch (error) {
       console.log({ error });
       throw new HttpException(
@@ -151,78 +151,177 @@ export class UsersService {
     //   .populate(PopulateOptionsAuth);
   }
 
-  async __verifyUser(value: IUserTokenVerification) {
-    // return await this.model
-    //   .findOne(
-    //     { $and: [{ _id: new Types.ObjectId(value.id) }, { code: value.code }] },
-    //     '-__v',
-    //   )
-    //   .lean()
-    //   .populate(PopulateOptionsAuth);
+  async update(code: string, value: UpdateUserDto): Promise<Result> {
+    try {
+      const user = await this.dataServices.users.findOne(
+        code,
+        '_id code',
+      );
+      if (!user) {
+        return fail({
+          code: HttpStatus.NOT_FOUND,
+          message: 'User not found',
+          error: 'Not found resource',
+        });
+      }
+      const salt = await bcrypt.genSalt();
+      const update = {
+        ...(value.firstName && {
+          firstName: value.firstName,
+        }),
+        ...(value.lastName && {
+          lastName: value.lastName,
+        }),
+        ...(value.address && {
+          address: value.address,
+        }),
+        ...(value.email && {
+          email: value.email,
+        }),
+        ...(value.gender && {
+          gender: value.gender,
+        }),
+        ...(value.accountType && {
+          accountType: value.accountType,
+        }),
+        ...(value.password && {
+          password: await bcrypt.hash(value.password, salt),
+        }),
+        ...(value.phone && {
+          phone: value.phone,
+        }),
+        ...(value.profile_picture && {
+          profile_picture: value.profile_picture,
+        }),
+        ...(value.pseudo && {
+          pseudo: value.pseudo,
+        }),
+        lastUpdatedAt: new Date(),
+      };
+      const result = await this.dataServices.users.update(
+        code,
+        update,
+      );
+      if (!result) {
+        return fail({
+          code: HttpStatus.NOT_MODIFIED,
+          message: '',
+          error: '',
+        });
+      }
+      return succeed({
+        code: HttpStatus.OK,
+        data: await this.dataServices.users.findOne(code, '-_id -__v -password -publications -followers -subscriptions'),
+      });
+    } catch (error) {
+      console.log({ error })
+      throw new HttpException(
+        `Error while updating user. Try again.`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+  
+  async isPseudoAvailable(pseudo: string): Promise<Result> {
+    try {
+      const user = await this.dataServices.users.findByPseudo(pseudo);
+      return succeed({
+        code: HttpStatus.OK,
+        data: {
+          isAvailable: user ? false : true,
+          pseudo,
+        }
+      });
+    } catch (error) {
+      console.log({ error })
+      throw new HttpException(
+        ErrorMessages.ERROR_GETTING_DATA,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
-  async __findByCode(code: string) {
-    // return await this.model.findOne({ code });
+  async followAccount(value: FollowAccountDto): Promise<Result> {
+    try {
+      if (value.user === value.account) {
+        return fail({
+          code: HttpStatus.BAD_REQUEST,
+          message: '',
+          error: '',
+        });
+      }
+      const user = await this.dataServices.users.findOne(value.user, '_id code');
+      if (!user) {
+        return fail({
+          code: HttpStatus.NOT_FOUND,
+          message: 'User not found',
+          error: 'Not found resource',
+        });
+      }
+      const account = await this.dataServices.users.findOne(value.account, '_id code');
+      if (!account) {
+        return fail({
+          code: HttpStatus.NOT_FOUND,
+          message: 'Account to follow not found',
+          error: 'Not found resource',
+        });
+      }
+      await this.dataServices.users.addAccountFollower(user['_id'], account['_id']);
+      await this.dataServices.users.subscribeAccount(user['_id'], account['_id']);
+      return succeed({
+        code: HttpStatus.OK,
+        data: {
+          user: user.code,
+          account: account.code,
+        }
+      })
+    } catch (error) {
+      throw new HttpException(
+        'Error while updating account',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
-  async __findByPhone(phone: string) {
-    // return await this.model.findOne({ phone });
-  }
-
-  async __updatePushTokens(idUser: string, pushTokenValue: string) {
-    // return await this.model.findByIdAndUpdate(idUser, {
-    //   $addToSet: {
-    //     push_tokens: pushTokenValue,
-    //   },
-    // });
-  }
-
-  async __linkWalletToUser(idUser: string, walletId: any) {
-    // return await this.model.findByIdAndUpdate(idUser, {
-    //   $addToSet: {
-    //     wallets: walletId,
-    //   },
-    // });
-  }
-
-  async __getWallets(code: string) {
-    // return await this.model.aggregate([
-    //   {
-    //     $match: {
-    //       code,
-    //     },
-    //   },
-    //   {
-    //     $lookup: {
-    //       from: 'wallets',
-    //       localField: '_id',
-    //       foreignField: 'owner',
-    //       as: 'wallets',
-    //     },
-    //   },
-    //   {
-    //     $project: {
-    //       _id: 0,
-    //       wallet: '$wallets',
-    //     },
-    //   },
-    //   {
-    //     $unwind: {
-    //       path: '$wallet',
-    //     },
-    //   },
-    //   {
-    //     $match: {
-    //       'wallet.isDeleted': false,
-    //     },
-    //   },
-    //   {
-    //     $project: {
-    //       'wallet._id': 0,
-    //       'wallet.__v': 0,
-    //       'wallet.transactions': 0,
-    //     },
-    //   },
-    // ]);
+  async unFollowAccount(value: UnFollowAccountDto): Promise<Result> {
+    try {
+      if (value.user === value.account) {
+        return fail({
+          code: HttpStatus.BAD_REQUEST,
+          message: '',
+          error: '',
+        });
+      }
+      const user = await this.dataServices.users.findOne(value.user, '_id code');
+      if (!user) {
+        return fail({
+          code: HttpStatus.NOT_FOUND,
+          message: 'User not found',
+          error: 'Not found resource',
+        });
+      }
+      const account = await this.dataServices.users.findOne(value.account, '_id code');
+      if (!account) {
+        return fail({
+          code: HttpStatus.NOT_FOUND,
+          message: 'Account to unfollow not found',
+          error: 'Not found resource',
+        });
+      }
+      await this.dataServices.users.removeAccountFollower(user['_id'], account['_id']);
+      await this.dataServices.users.unSubscribeAccount(user['_id'], account['_id']);
+      return succeed({
+        code: HttpStatus.OK,
+        data: {
+          user: user.code,
+          account: account.code,
+        }
+      })
+    } catch (error) {
+      throw new HttpException(
+        'Error while updating account',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
