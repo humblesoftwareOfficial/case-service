@@ -13,6 +13,7 @@ import { UsersModule } from './users/users.module';
 import { SectionsModule } from './sections/sections.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
+import { PublicationViewModule } from './publication-view/publication-view.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { ProductsModule } from './products/products.module';
     SectionsModule,
     CategoriesModule,
     ProductsModule,
+    PublicationViewModule,
   ],
   controllers: [AppController],
   providers: [AppService],

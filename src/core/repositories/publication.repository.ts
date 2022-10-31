@@ -379,4 +379,17 @@ export class PublicationRepository<T>
   populateMediasAndColorsOptions(value: any): Promise<any> {
     return this._repository.populate(value, PopulateProductOptions);
   }
+
+  addNewView(code: string, viewId: Types.ObjectId): Promise<T> {
+    return this._repository
+      .findOneAndUpdate(
+        { code },
+        {
+          $addToSet: {
+            views: viewId,
+          },
+        },
+      )
+      .exec();
+  }
 }

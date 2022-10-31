@@ -21,6 +21,8 @@ import { Product, ProductDocument } from 'src/products/products.entity';
 import { ProductRepository } from '../repositories/product.repository';
 import { ProvisioningRepository } from '../repositories/provisioning.repository';
 import { StockProvisioning, StockProvisioningDocument } from '../../products/stock-provisioning.entity';
+import { PublicationView, PublicationViewDocument } from '../../publication-view/publication-view.entity';
+import { PublicationViewRepository } from '../repositories/publication-view.repository';
 
 @Injectable()
 export class MongoDataServices
@@ -33,6 +35,7 @@ export class MongoDataServices
   category: CategoryRepository<Category>;
   product: ProductRepository<Product>;
   provisioning: ProvisioningRepository<StockProvisioning>;
+  publicationView: PublicationViewRepository<PublicationView>;
 
   constructor(
     @InjectModel(User.name)
@@ -50,6 +53,9 @@ export class MongoDataServices
     private productRepository: Model<ProductDocument | Product>,
     @InjectModel(StockProvisioning.name)
     private provisioningRepository: Model<StockProvisioningDocument | StockProvisioning>,
+
+    @InjectModel(PublicationView.name)
+    private publicationViewRepository: Model<PublicationViewDocument | PublicationView>,
   ) {}
 
   onApplicationBootstrap() {
@@ -73,5 +79,6 @@ export class MongoDataServices
       'user',
       'product',
     ]);
+    this.publicationView = new PublicationViewRepository<PublicationView>(this.publicationViewRepository);
   }
 }

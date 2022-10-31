@@ -48,6 +48,7 @@ export class PublicationService {
         category: null,
         section: null,
         tags: [],
+        views: [],
       };
       const createdPublication = await this.dataServices.publications.create(
         publication,
@@ -284,6 +285,7 @@ export class PublicationService {
         section: product.section,
         category: product.category,
         tags: product.tags,
+        views: [],
       };
       const createdPublication = await this.dataServices.publications.create(
         publication,
