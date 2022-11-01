@@ -1,0 +1,8 @@
+build:
+  docker:
+    web: ./Dockerfile.production
+  config:
+    JWT_SECRET: caseserviceKey
+    DB_URL: mongodb+srv://mothiam:llj8y6H7FFnRpoA4@cluster0.en7ow.mongodb.net/caseservice_db?retryWrites=true&w=majority
+    NODE_ENV: production
+    NPM_CONFIG_PRODUCTION: false
