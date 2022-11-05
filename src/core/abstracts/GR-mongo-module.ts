@@ -16,6 +16,7 @@ import { MongoDataServices } from './GR-mongo-data-services';
 import { Product, ProductSchema } from '../../products/products.entity';
 import { StockProvisioning, StockProvisioningSchema } from '../../products/stock-provisioning.entity';
 import { PublicationView, PublicationViewSchema } from '../../publication-view/publication-view.entity';
+import { Reactions, ReactionsSchema } from '../../reactions/reactions.entity';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { PublicationView, PublicationViewSchema } from '../../publication-view/p
       { name: Product.name, schema: ProductSchema },
       { name: StockProvisioning.name, schema: StockProvisioningSchema },
       { name: PublicationView.name, schema: PublicationViewSchema },
+      { name: Reactions.name, schema: ReactionsSchema },
     ]),
     // MongooseModule.forRoot(DATA_BASE_CONFIGURATION.mongoConnectionString),
     MongooseModule.forRootAsync({

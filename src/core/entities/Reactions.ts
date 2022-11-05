@@ -1,14 +1,15 @@
 /* eslint-disable prettier/prettier */
+import { EReactionsType } from 'src/reactions/reactions.helpers';
 import { DefaultAttributesEntity } from './DefaultAttributes';
 import { PublicationEntity } from './Publication';
 import { UserEntity } from './User';
 
-export class PublicationViewEntity extends DefaultAttributesEntity {
+export class ReactionsEntity extends DefaultAttributesEntity {
+  message: string;
+  type: EReactionsType;
   user: UserEntity;
   publication: PublicationEntity;
-  publicationFrom?: PublicationEntity;
   week: number;
   month: number;
   year: number;
-  isInPromotion: boolean;
 }

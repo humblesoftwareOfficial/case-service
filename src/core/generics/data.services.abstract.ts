@@ -18,6 +18,8 @@ import { ProvisioningRepository } from '../repositories/provisioning.repository'
 import { StockProvisioning } from '../../products/stock-provisioning.entity';
 import { PublicationViewRepository } from '../repositories/publication-view.repository';
 import { PublicationView } from '../../publication-view/publication-view.entity';
+import { ReactionsRepository } from '../repositories/reactions.repository';
+import { Reactions } from '../../reactions/reactions.entity';
 
 export abstract class IDataServices {
   abstract users: UserRepository<User | UserDocument>;
@@ -35,4 +37,6 @@ export abstract class IDataServices {
   abstract provisioning: ProvisioningRepository<StockProvisioning>;
 
   abstract publicationView: PublicationViewRepository<PublicationView>;
+
+  abstract reactions: ReactionsRepository<Reactions>;
 }

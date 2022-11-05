@@ -5,6 +5,7 @@ import {
   IProductProvisioning,
 } from 'src/products/product.helper';
 import { IPublicationsListFilter } from 'src/publication/publication.helper';
+import { EReactionsType } from 'src/reactions/reactions.helpers';
 
 export abstract class IGenericRepository<T> {
   abstract findAll(ignoreAttributes: string): Promise<T[]>;
@@ -57,9 +58,16 @@ export abstract class IPublicationRepository<T> {
   abstract getPublicationInfoByCode(code: string): Promise<T>;
   abstract getPublicationsList(filter: IPublicationsListFilter): Promise<any[]>;
   abstract populateMediasAndColorsOptions(value: any): Promise<any>;
-  abstract addNewView(
+  abstract addNewView(code: string, viewId: Types.ObjectId): Promise<T>;
+  abstract addNewReaction(
     code: string,
-    viewId: Types.ObjectId,
+    reactionId: Types.ObjectId,
+    type: EReactionsType,
+  ): Promise<T>;
+  abstract removeReaction(
+    code: string,
+    reactionId: Types.ObjectId,
+    type: EReactionsType,
   ): Promise<T>;
 }
 
@@ -105,3 +113,10 @@ export abstract class IProductRepository<T> {
 export abstract class IProvisioningRepository<T> {}
 
 export abstract class IPublicationViewRepository<T> {}
+
+export abstract class IReactionsRepository<T> {
+  abstract getUserLikeForPublication(
+    user: Types.ObjectId,
+    publication: Types.ObjectId,
+  ): Promise<T>;
+}

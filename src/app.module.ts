@@ -14,6 +14,7 @@ import { SectionsModule } from './sections/sections.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
 import { PublicationViewModule } from './publication-view/publication-view.module';
+import { ReactionsModule } from './reactions/reactions.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { PublicationViewModule } from './publication-view/publication-view.modul
     CategoriesModule,
     ProductsModule,
     PublicationViewModule,
+    ReactionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

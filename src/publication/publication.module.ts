@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { PublicationController } from './publication.controller';
 import { PublicationService } from './publication.service';

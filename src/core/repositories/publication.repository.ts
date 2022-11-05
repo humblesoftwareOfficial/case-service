@@ -2,6 +2,7 @@
 
 import { Model, Types } from 'mongoose';
 import { IPublicationsListFilter } from 'src/publication/publication.helper';
+import { EReactionsType } from 'src/reactions/reactions.helpers';
 
 import { MongoGenericRepository } from '../abstracts/GR-mongo-generic-repository';
 import { IPublicationRepository } from '../generics/generic.repository.abstract';
@@ -387,6 +388,42 @@ export class PublicationRepository<T>
         {
           $addToSet: {
             views: viewId,
+          },
+        },
+      )
+      .exec();
+  }
+
+  addNewReaction(code: string, reactionId: Types.ObjectId, type: EReactionsType): Promise<T> {
+    return this._repository
+      .findOneAndUpdate(
+        { code },
+        {
+          $addToSet: {
+            ...(type === EReactionsType.LIKE && {
+              likes: reactionId,
+            }),
+            ...(type === EReactionsType.COMMENT && {
+              comments: reactionId,
+            }),
+          },
+        },
+      )
+      .exec();
+  }
+
+  removeReaction(code: string, reactionId: Types.ObjectId, type: EReactionsType): Promise<T> {
+    return this._repository
+      .findOneAndUpdate(
+        { code },
+        {
+          $pull: {
+            ...(type === EReactionsType.LIKE && {
+              likes: reactionId,
+            }),
+            ...(type === EReactionsType.COMMENT && {
+              comments: reactionId,
+            }),
           },
         },
       )

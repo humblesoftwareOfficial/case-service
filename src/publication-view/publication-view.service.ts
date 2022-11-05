@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { getWeekNumber } from 'src/shared/date.helpers';
 import { codeGenerator } from 'src/shared/utils';

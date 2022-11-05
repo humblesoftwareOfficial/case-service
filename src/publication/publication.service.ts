@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable, HttpException } from '@nestjs/common';
 import { IDataServices } from '../core/generics/data.services.abstract';
 import {
@@ -50,6 +51,8 @@ export class PublicationService {
         section: null,
         tags: [],
         views: [],
+        likes: [],
+        comments: [],
       };
       const createdPublication = await this.dataServices.publications.create(
         publication,
@@ -287,6 +290,8 @@ export class PublicationService {
         category: product.category,
         tags: product.tags,
         views: [],
+        likes: [],
+        comments: [],
       };
       const createdPublication = await this.dataServices.publications.create(
         publication,
