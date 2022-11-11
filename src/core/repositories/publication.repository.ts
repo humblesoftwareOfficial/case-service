@@ -41,6 +41,14 @@ const PopulateProductOptions = [
   },
 ];
 
+const PopulateUsersReactions = [
+  {
+    path: 'likes.user',
+    select: '-_id code firstName lastName pseudo phone',
+    model: 'User',
+  },
+];
+
 export class PublicationRepository<T>
   extends MongoGenericRepository<T>
   implements IPublicationRepository<T>
@@ -85,6 +93,14 @@ export class PublicationRepository<T>
             foreignField: '_id',
             as: 'products',
           },
+        },
+        {
+          $lookup: {
+            from: "reactions",
+            localField: "likes",
+            foreignField: "_id",
+            as: "likes"
+          }
         },
         {
           $unwind: {
@@ -152,6 +168,8 @@ export class PublicationRepository<T>
             },
             medias: 1,
             product: '$products',
+            likes: { $cond: { if: { $isArray: "$likes" }, then: "$likes" , else: []} },
+            likesCount: { $cond: { if: { $isArray: "$likes" }, then: { $size: "$likes" }, else: 0} },
           },
         },
         {
@@ -165,6 +183,9 @@ export class PublicationRepository<T>
             'product.publications': 0,
             'product.user': 0,
             'product.priceHistory': 0,
+            'likes._id': 0,
+            'likes.__v': 0,
+            'likes.publication': 0,
           },
         },
       ])
@@ -233,6 +254,11 @@ export class PublicationRepository<T>
             ...(filter.ignorePublications?.length && {
               code: {
                 $nin: filter.ignorePublications,
+              },
+            }),
+            ...(filter.categories?.length && {
+              category: {
+                $in: filter.categories
               },
             }),
           },
@@ -304,6 +330,14 @@ export class PublicationRepository<T>
           },
         },
         {
+          $lookup: {
+            from: "reactions",
+            localField: "data.likes",
+            foreignField: "_id",
+            as: "data.likes"
+          }
+        },
+        {
           $unwind: {
             path: '$data.user',
           },
@@ -358,6 +392,9 @@ export class PublicationRepository<T>
             },
             medias: '$data.medias',
             product: '$data.products',
+            likes: { $cond: { if: { $isArray: "$data.likes" }, then: "$data.likes" , else: []} },
+            likesCount: { $cond: { if: { $isArray: "$data.likes" }, then: { $size: "$data.likes" }, else: 0} },
+            viewsCount: { $cond: { if: { $isArray: "$data.views" }, then: { $size: "$data.views" }, else: 0} },
           },
         },
         {
@@ -371,6 +408,9 @@ export class PublicationRepository<T>
             'product.publications': 0,
             'product.user': 0,
             'product.priceHistory': 0,
+            'likes._id': 0,
+            'likes.__v': 0,
+            'likes.publication': 0,
           },
         },
       ])
@@ -378,7 +418,7 @@ export class PublicationRepository<T>
   }
 
   populateMediasAndColorsOptions(value: any): Promise<any> {
-    return this._repository.populate(value, PopulateProductOptions);
+    return this._repository.populate(value, PopulateProductOptions.concat(PopulateUsersReactions));
   }
 
   addNewView(code: string, viewId: Types.ObjectId): Promise<T> {

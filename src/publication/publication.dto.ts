@@ -12,6 +12,7 @@ import {
   Min,
   Validate,
 } from 'class-validator';
+import { CategoriesCodesValidator } from 'src/categories/categories.helper';
 import { ProductCodeValidator } from 'src/products/product.helper';
 import { SectionCodeValidator } from 'src/sections/section.helper';
 
@@ -109,6 +110,11 @@ export class PublicationsListDto extends PaginationDto {
   @IsOptional()
   @Validate(PublicationsCodesValidator)
   ignorePublications: string[];
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Validate(CategoriesCodesValidator)
+  categories: string[];
 }
 
 export class UpdatePublicationDto {

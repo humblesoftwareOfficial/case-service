@@ -68,6 +68,7 @@ export class PublicationService {
         },
       });
     } catch (error) {
+      console.log({ error })
       throw new HttpException(
         `Error while creating new publication. Try again.`,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -106,6 +107,7 @@ export class PublicationService {
       const skip = (value.page - 1) * value.limit;
       let user = null;
       let section = null;
+      let categories = [];
       if (value.user) {
         user = await this.dataServices.users.findOne(value.user, '_id code');
         if (!user) {
@@ -129,11 +131,16 @@ export class PublicationService {
           });
         }
       }
+      if (value.categories?.length) {
+        const resultCategories = await this.dataServices.category.findAllByCodes(value.categories, '_id code');
+        categories = resultCategories.flatMap((c) => c['_id']);
+      }
       const result = await this.dataServices.publications.getPublicationsList({
         ...value,
         skip,
         user: user ? user['_id'] : undefined,
         section: section ? section['_id'] : undefined,
+        categories: categories?.length ? categories : [],
       });
       if (!result?.length) {
         return succeed({

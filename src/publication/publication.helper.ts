@@ -48,6 +48,7 @@ export interface IPublicationsListFilter {
   year?: number;
   user?: Types.ObjectId;
   section?: Types.ObjectId;
+  categories?: Types.ObjectId[];
   searchTerm?: string;
   fromProduct?: boolean;
   ignorePublications?: string[];

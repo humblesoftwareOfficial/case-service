@@ -52,10 +52,10 @@ export class Publication extends DefaultAttributes {
   @Prop({ type: [Types.ObjectId], ref: 'Product', default: []})
   products: Product[] | Types.ObjectId[];
 
-  @Prop({ required: true, type: Types.ObjectId, ref: 'Section', index: true })
+  @Prop({ type: Types.ObjectId, ref: 'Section', index: true })
   section: Section | Types.ObjectId;
 
-  @Prop({ required: true, type: Types.ObjectId, ref: 'Category', index: true })
+  @Prop({ type: Types.ObjectId, ref: 'Category', index: true })
   category: Category | Types.ObjectId;
 
   @Prop({ type: [String], default: [],})
