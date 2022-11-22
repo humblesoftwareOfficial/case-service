@@ -115,8 +115,9 @@ export abstract class IProvisioningRepository<T> {}
 export abstract class IPublicationViewRepository<T> {}
 
 export abstract class IReactionsRepository<T> {
-  abstract getUserLikeForPublication(
+  abstract getUserLikeOrRecordForPublication(
     user: Types.ObjectId,
     publication: Types.ObjectId,
+    type: EReactionsType,
   ): Promise<T>;
 }

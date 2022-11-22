@@ -12,13 +12,14 @@ export class ReactionsRepository<T>
     super(repository, populateOnFind);
   }
 
-  getUserLikeForPublication(
+  getUserLikeOrRecordForPublication(
     user: Types.ObjectId,
     publication: Types.ObjectId,
+    type: EReactionsType,
   ): Promise<T> {
     return this._repository
       .findOne({
-        $and: [{ user }, { publication }, { type: EReactionsType.LIKE }, { isDeleted: false }],
+        $and: [{ user }, { publication }, { type }, { isDeleted: false }],
       })
       .exec();
   }

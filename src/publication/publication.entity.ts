@@ -69,6 +69,9 @@ export class Publication extends DefaultAttributes {
 
   @Prop({ type: [Types.ObjectId], ref: 'Reactions', default: []})
   comments: Reactions[] | Types.ObjectId[];
+
+  @Prop({ type: [Types.ObjectId], ref: 'Reactions', default: []})
+  records: Reactions[] | Types.ObjectId[];
 }
 
 export const PublicationSchema = SchemaFactory.createForClass(Publication);

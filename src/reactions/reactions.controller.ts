@@ -8,7 +8,7 @@ import {
 import { JwtAuthGuard } from 'src/auth/jwt-auth.gard';
 import {
   NewReactionDto,
-  RemoveLikeDto,
+  RemoveLikeOrRecordDto,
   RemoveReactionDto,
 } from './reactions.dto';
 import { ReactionsService } from './reactions.service';
@@ -57,7 +57,9 @@ export class ReactionsController {
     description: 'Not found resource.',
   })
   @Post('/remove/like')
-  async removeUserLikeFromPublication(@Body() value: RemoveLikeDto) {
-    return this.service.removeUserLikeFromPublication(value);
+  async removeUserLikeOrSaveFromPublication(
+    @Body() value: RemoveLikeOrRecordDto,
+  ) {
+    return this.service.removeUserLikeOrSaveFromPublication(value);
   }
 }

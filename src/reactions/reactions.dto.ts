@@ -41,13 +41,12 @@ export class RemoveReactionDto {
   @Validate(PublicationCodeValidator)
   publication: string;
 
-  
   @IsNotEmpty({ message: 'Reaction is required.' })
   @Validate(ReactionCodeValidator)
   reaction: string;
 }
 
-export class RemoveLikeDto {
+export class RemoveLikeOrRecordDto {
   @IsNotEmpty({ message: 'User is required.' })
   @Validate(UserCodeValidator)
   user: string;
@@ -55,4 +54,10 @@ export class RemoveLikeDto {
   @IsNotEmpty({ message: 'Publication is required.' })
   @Validate(PublicationCodeValidator)
   publication: string;
+
+  @IsNotEmpty({ message: 'Reaction type cannot be empty.' })
+  @IsEnum(EReactionsType, {
+    message: 'Reaction type must be a valid value. See EReactionsType enum!',
+  })
+  reactionType: EReactionsType;
 }

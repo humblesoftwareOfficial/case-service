@@ -446,6 +446,9 @@ export class PublicationRepository<T>
             ...(type === EReactionsType.COMMENT && {
               comments: reactionId,
             }),
+            ...(type === EReactionsType.SAVE_PUBLICATION && {
+              records: reactionId,
+            }),
           },
         },
       )

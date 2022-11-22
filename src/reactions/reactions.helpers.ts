@@ -1,6 +1,10 @@
 /* eslint-disable prettier/prettier */
 
-import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from "class-validator";
+import {
+  ValidationArguments,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+} from 'class-validator';
 
 export const isValidReactionCode = (code: string) =>
   code && code.length === 23 && code.includes('REA-');
@@ -22,4 +26,16 @@ export enum EReactionsType {
   LIKE = 'LIKE',
   COMMENT = 'COMMENT',
   MESSAGE = 'MESSAGE',
+  SAVE_PUBLICATION = 'SAVE_PUBLICATION',
 }
+
+export const getCustomReactionTargetMessage = (value: EReactionsType) => {
+  switch (value) {
+    case EReactionsType.LIKE:
+      return 'liked';
+    case EReactionsType.SAVE_PUBLICATION:
+      return 'saved';
+    default:
+      return;
+  }
+};

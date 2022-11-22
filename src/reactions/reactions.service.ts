@@ -6,10 +6,13 @@ import { getWeekNumber } from 'src/shared/date.helpers';
 import { codeGenerator } from 'src/shared/utils';
 import {
   NewReactionDto,
-  RemoveLikeDto,
+  RemoveLikeOrRecordDto,
   RemoveReactionDto,
 } from './reactions.dto';
-import { EReactionsType } from './reactions.helpers';
+import {
+  EReactionsType,
+  getCustomReactionTargetMessage,
+} from './reactions.helpers';
 
 interface IRemoveReaction {
   reactionId: Types.ObjectId;
@@ -58,16 +61,27 @@ export class ReactionsService {
           });
         }
       }
-      const userHasAlreadyLiked = await this.__hasAlreadyLiked(
-        user['_id'],
-        publication['_id'],
-      );
-      if (userHasAlreadyLiked.success) {
-        return fail({
-          code: HttpStatus.BAD_REQUEST,
-          message: 'User has already liked this publication',
-          error: 'Already liked',
-        });
+      if (
+        [EReactionsType.LIKE, EReactionsType.SAVE_PUBLICATION].includes(
+          value.reactionType,
+        )
+      ) {
+        const userHasAlreadyLikedOrRecorded =
+          await this.__hasAlreadyLikedOrRecorded(
+            user['_id'],
+            publication['_id'],
+            value.reactionType,
+          );
+        if (userHasAlreadyLikedOrRecorded.success) {
+          const customReaction = getCustomReactionTargetMessage(
+            value.reactionType,
+          );
+          return fail({
+            code: HttpStatus.BAD_REQUEST,
+            message: `User has already ${customReaction} this publication`,
+            error: `Already ${customReaction}`,
+          });
+        }
       }
       const creationDate = new Date();
       const newReaction = {
@@ -172,7 +186,9 @@ export class ReactionsService {
     }
   }
 
-  async removeUserLikeFromPublication(value: RemoveLikeDto): Promise<Result> {
+  async removeUserLikeOrSaveFromPublication(
+    value: RemoveLikeOrRecordDto,
+  ): Promise<Result> {
     try {
       const user = await this.dataServices.users.findOne(value.user, 'code');
       if (!user) {
@@ -193,15 +209,26 @@ export class ReactionsService {
           error: 'Not found resource',
         });
       }
-      const result = await this.__hasAlreadyLiked(
+      const result = await this.__hasAlreadyLikedOrRecorded(
         user['_id'],
         publication['_id'],
+        value.reactionType,
       );
       if (!result.success) {
+        const customReaction = getCustomReactionTargetMessage(
+          value.reactionType,
+        );
         return fail({
           code: HttpStatus.BAD_REQUEST,
-          message: 'User has not liked this publication yet!',
-          error: 'Already liked',
+          message: `User has not ${customReaction} this publication yet!`,
+          error: `Already ${customReaction}`,
+        });
+      }
+      if (result.data.type !== value.reactionType) {
+        return fail({
+          code: HttpStatus.BAD_REQUEST,
+          message: `Bad reaction target!`,
+          error: `Bad reaction target!`,
         });
       }
       await this.__removeReaction({
@@ -225,14 +252,20 @@ export class ReactionsService {
     }
   }
 
-  async __hasAlreadyLiked(
+  async __hasAlreadyLikedOrRecorded(
     userId: Types.ObjectId,
     publicationId: Types.ObjectId,
+    type: EReactionsType,
   ) {
-    const result = await this.dataServices.reactions.getUserLikeForPublication(
-      userId,
+    const result =
+      await this.dataServices.reactions.getUserLikeOrRecordForPublication(
+        userId,
+        publicationId,
+        type,
+      );
+    console.log({ userId,
       publicationId,
-    );
+      type, });
     if (result) {
       if (result.isDeleted) return { success: false, data: null };
       return { success: true, data: result };

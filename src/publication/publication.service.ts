@@ -53,6 +53,7 @@ export class PublicationService {
         views: [],
         likes: [],
         comments: [],
+        records: [],
       };
       const createdPublication = await this.dataServices.publications.create(
         publication,
@@ -299,6 +300,7 @@ export class PublicationService {
         views: [],
         likes: [],
         comments: [],
+        records: [],
       };
       const createdPublication = await this.dataServices.publications.create(
         publication,
