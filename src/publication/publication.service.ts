@@ -12,7 +12,6 @@ import { HttpStatus } from '@nestjs/common/enums';
 import { codeGenerator, ErrorMessages } from '../shared/utils';
 import { getWeekNumber } from '../shared/date.helpers';
 import { JwtService } from '@nestjs/jwt';
-import { Publication } from './publication.entity';
 import { Types } from 'mongoose';
 
 @Injectable()
