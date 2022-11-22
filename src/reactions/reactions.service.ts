@@ -224,13 +224,6 @@ export class ReactionsService {
           error: `Already ${customReaction}`,
         });
       }
-      if (result.data.type !== value.reactionType) {
-        return fail({
-          code: HttpStatus.BAD_REQUEST,
-          message: `Bad reaction target!`,
-          error: `Bad reaction target!`,
-        });
-      }
       await this.__removeReaction({
         publicationCode: publication.code,
         reactionCode: result.data.code,
@@ -263,9 +256,6 @@ export class ReactionsService {
         publicationId,
         type,
       );
-    console.log({ userId,
-      publicationId,
-      type, });
     if (result) {
       if (result.isDeleted) return { success: false, data: null };
       return { success: true, data: result };
