@@ -18,6 +18,24 @@ export class UserCodeValidator implements ValidatorConstraintInterface {
   }
 }
 
+@ValidatorConstraint({ name: 'UsersCodesValidator' })
+export class UsersCodesValidator
+  implements ValidatorConstraintInterface
+{
+  validate(codes: string[], _args: ValidationArguments) {
+    let isValid = true;
+    for (const code of codes) {
+      if (!isValidUserCode(code)) isValid = false;
+    }
+    return isValid;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  defaultMessage(_args: ValidationArguments) {
+    return 'At least one active user code you provided is incorrect.';
+  }
+}
+
 export const getDefaultUserInfos = (user: User) => ({
   code: user?.code,
   firstName: user?.firstName,

@@ -47,6 +47,11 @@ const PopulateUsersReactions = [
     select: '-_id code firstName lastName pseudo phone',
     model: 'User',
   },
+  {
+    path: 'records.user',
+    select: '-_id code firstName lastName pseudo phone',
+    model: 'User',
+  },
 ];
 
 export class PublicationRepository<T>
@@ -58,11 +63,6 @@ export class PublicationRepository<T>
   }
 
   getPublicationInfoByCode(code: string): Promise<any> {
-    // return this._repository
-    //   .findOne({ code }, '-_id -__v', { lean: true })
-    //   .populate(PopulateOptions)
-    //   // .populate(PopulateProductOptions)
-    //   .exec();
     return this._repository
       .aggregate([
         {
@@ -96,11 +96,33 @@ export class PublicationRepository<T>
         },
         {
           $lookup: {
-            from: "reactions",
-            localField: "likes",
-            foreignField: "_id",
-            as: "likes"
-          }
+            from: 'reactions',
+            localField: 'likes',
+            foreignField: '_id',
+            pipeline: [
+              {
+                $match: {
+                  isDeleted: false,
+                },
+              },
+            ],
+            as: 'likes',
+          },
+        },
+        {
+          $lookup: {
+            from: 'reactions',
+            localField: 'records',
+            foreignField: '_id',
+            pipeline: [
+              {
+                $match: {
+                  isDeleted: false,
+                },
+              },
+            ],
+            as: 'records',
+          },
         },
         {
           $unwind: {
@@ -168,8 +190,46 @@ export class PublicationRepository<T>
             },
             medias: 1,
             product: '$products',
-            likes: { $cond: { if: { $isArray: "$likes" }, then: "$likes" , else: []} },
-            likesCount: { $cond: { if: { $isArray: "$likes" }, then: { $size: "$likes" }, else: 0} },
+            likes: {
+              $cond: {
+                if: {
+                  $isArray: '$likes',
+                },
+                then: '$likes',
+                else: [],
+              },
+            },
+            likesCount: {
+              $cond: {
+                if: {
+                  $isArray: '$likes',
+                },
+                then: {
+                  $size: '$likes',
+                },
+                else: 0,
+              },
+            },
+            records: {
+              $cond: {
+                if: {
+                  $isArray: '$records',
+                },
+                then: '$records',
+                else: [],
+              },
+            },
+            recordsCount: {
+              $cond: {
+                if: {
+                  $isArray: '$records',
+                },
+                then: {
+                  $size: '$records',
+                },
+                else: 0,
+              },
+            },
           },
         },
         {
@@ -186,6 +246,9 @@ export class PublicationRepository<T>
             'likes._id': 0,
             'likes.__v': 0,
             'likes.publication': 0,
+            'records._id': 0,
+            'records.__v': 0,
+            'records.publication': 0,
           },
         },
       ])
@@ -258,7 +321,7 @@ export class PublicationRepository<T>
             }),
             ...(filter.categories?.length && {
               category: {
-                $in: filter.categories
+                $in: filter.categories,
               },
             }),
           },
@@ -331,11 +394,11 @@ export class PublicationRepository<T>
         },
         {
           $lookup: {
-            from: "reactions",
-            localField: "data.likes",
-            foreignField: "_id",
-            as: "data.likes"
-          }
+            from: 'reactions',
+            localField: 'data.likes',
+            foreignField: '_id',
+            as: 'data.likes',
+          },
         },
         {
           $unwind: {
@@ -392,9 +455,27 @@ export class PublicationRepository<T>
             },
             medias: '$data.medias',
             product: '$data.products',
-            likes: { $cond: { if: { $isArray: "$data.likes" }, then: "$data.likes" , else: []} },
-            likesCount: { $cond: { if: { $isArray: "$data.likes" }, then: { $size: "$data.likes" }, else: 0} },
-            viewsCount: { $cond: { if: { $isArray: "$data.views" }, then: { $size: "$data.views" }, else: 0} },
+            likes: {
+              $cond: {
+                if: { $isArray: '$data.likes' },
+                then: '$data.likes',
+                else: [],
+              },
+            },
+            likesCount: {
+              $cond: {
+                if: { $isArray: '$data.likes' },
+                then: { $size: '$data.likes' },
+                else: 0,
+              },
+            },
+            viewsCount: {
+              $cond: {
+                if: { $isArray: '$data.views' },
+                then: { $size: '$data.views' },
+                else: 0,
+              },
+            },
           },
         },
         {
@@ -418,7 +499,10 @@ export class PublicationRepository<T>
   }
 
   populateMediasAndColorsOptions(value: any): Promise<any> {
-    return this._repository.populate(value, PopulateProductOptions.concat(PopulateUsersReactions));
+    return this._repository.populate(
+      value,
+      PopulateProductOptions.concat(PopulateUsersReactions),
+    );
   }
 
   addNewView(code: string, viewId: Types.ObjectId): Promise<T> {
@@ -434,7 +518,11 @@ export class PublicationRepository<T>
       .exec();
   }
 
-  addNewReaction(code: string, reactionId: Types.ObjectId, type: EReactionsType): Promise<T> {
+  addNewReaction(
+    code: string,
+    reactionId: Types.ObjectId,
+    type: EReactionsType,
+  ): Promise<T> {
     return this._repository
       .findOneAndUpdate(
         { code },
@@ -455,7 +543,11 @@ export class PublicationRepository<T>
       .exec();
   }
 
-  removeReaction(code: string, reactionId: Types.ObjectId, type: EReactionsType): Promise<T> {
+  removeReaction(
+    code: string,
+    reactionId: Types.ObjectId,
+    type: EReactionsType,
+  ): Promise<T> {
     return this._repository
       .findOneAndUpdate(
         { code },

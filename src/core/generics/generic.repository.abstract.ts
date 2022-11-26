@@ -4,7 +4,10 @@ import {
   IProductionListFilter,
   IProductProvisioning,
 } from 'src/products/product.helper';
-import { IPublicationsListFilter } from 'src/publication/publication.helper';
+import {
+  IPublicationsListByReactionsFilter,
+  IPublicationsListFilter,
+} from 'src/publication/publication.helper';
 import { EReactionsType } from 'src/reactions/reactions.helpers';
 
 export abstract class IGenericRepository<T> {
@@ -120,4 +123,8 @@ export abstract class IReactionsRepository<T> {
     publication: Types.ObjectId,
     type: EReactionsType,
   ): Promise<T>;
+
+  abstract getPublicationsListByReactions(
+    filter: IPublicationsListByReactionsFilter,
+  ): Promise<any[]>;
 }

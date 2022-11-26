@@ -2,6 +2,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsBoolean,
   IsEnum,
   IsInt,
@@ -14,11 +15,13 @@ import {
 } from 'class-validator';
 import { CategoriesCodesValidator } from 'src/categories/categories.helper';
 import { ProductCodeValidator } from 'src/products/product.helper';
+import { EReactionsType } from 'src/reactions/reactions.helpers';
 import { SectionCodeValidator } from 'src/sections/section.helper';
+import { NotEmptyArrayValidator } from 'src/shared/array.helper';
 
 import { EPublicationType } from '../core/entities/Publication';
 import { PaginationDto } from '../shared/pagination.dto';
-import { UserCodeValidator } from '../users/users.helper';
+import { UserCodeValidator, UsersCodesValidator } from '../users/users.helper';
 import { PublicationCodeValidator, PublicationsCodesValidator } from './publication.helper';
 
 export class NewPublicationDto {
@@ -151,4 +154,44 @@ export class NewPublicationFromProductDto extends NewPublicationDto {
   @IsNotEmpty({ message: 'Product is required.' })
   @Validate(ProductCodeValidator)
   product: string;
+}
+
+export class PublicationsListByReactionsDto extends PaginationDto {
+  @IsArray()
+  @Validate(NotEmptyArrayValidator)
+  @IsEnum(EReactionsType, { each: true })
+  types: EReactionsType[];
+
+  // @ApiProperty({ required: false })
+  // @IsOptional({})
+  @IsArray()
+  @Validate(NotEmptyArrayValidator)
+  @Validate(UsersCodesValidator)
+  users: string[];
+
+  // @ApiProperty({ required: false })
+  // @IsOptional({})
+  // @Type(() => Number)
+  // @IsInt()
+  // @Min(1)
+  // week: number;
+
+  // @ApiProperty({ required: false })
+  // @IsOptional({})
+  // @Type(() => Number)
+  // @IsInt()
+  // @Min(1)
+  // month: number;
+
+  // @ApiProperty({ required: false })
+  // @IsOptional({})
+  // @Type(() => Number)
+  // @IsInt()
+  // @Min(1)
+  // year: number;
+
+  // @ApiProperty({ required: false })
+  // @IsOptional()
+  // @Validate(PublicationsCodesValidator)
+  // ignorePublications: string[];
 }

@@ -2,6 +2,7 @@
 
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 import { Types } from 'mongoose';
+import { EReactionsType } from 'src/reactions/reactions.helpers';
 
 import { EPublicationType } from '../core/entities/Publication';
 
@@ -35,7 +36,7 @@ export class PublicationsCodesValidator
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   defaultMessage(_args: ValidationArguments) {
-    return 'At least on active publication code you provided is incorrect.';
+    return 'At least one active publication code you provided is incorrect.';
   }
 }
 
@@ -51,5 +52,16 @@ export interface IPublicationsListFilter {
   categories?: Types.ObjectId[];
   searchTerm?: string;
   fromProduct?: boolean;
+  ignorePublications?: string[];
+}
+
+export interface IPublicationsListByReactionsFilter {
+  skip: number;
+  limit: number;
+  types: EReactionsType[];
+  week?: number;
+  month?: number;
+  year?: number;
+  users?: Types.ObjectId[];
   ignorePublications?: string[];
 }

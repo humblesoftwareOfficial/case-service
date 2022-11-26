@@ -4,6 +4,7 @@ import { IDataServices } from '../core/generics/data.services.abstract';
 import {
   NewPublicationDto,
   NewPublicationFromProductDto,
+  PublicationsListByReactionsDto,
   PublicationsListDto,
   UpdatePublicationDto,
 } from './publication.dto';
@@ -167,6 +168,58 @@ export class PublicationService {
         },
       });
     } catch (error) {
+      throw new HttpException(
+        ErrorMessages.ERROR_GETTING_DATA,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async listByReactions(value: PublicationsListByReactionsDto): Promise<Result> {
+    try {
+      let users = [];
+      if (value.users) {
+        users = await this.dataServices.users.findAllByCodes(value.users, '_id code');
+        if (!users?.length) {
+          return fail({
+            code: HttpStatus.NOT_FOUND,
+            message: 'User not found',
+            error: 'Not found resource!',
+          });
+        }
+      }
+      const skip = (value.page - 1) * value.limit;
+      const result = await this.dataServices.reactions.getPublicationsListByReactions({
+        ...value,
+        skip,
+        users: users.flatMap((u) => u['_id']),
+      });
+      if (!result?.length) {
+        return succeed({
+          code: HttpStatus.OK,
+          data: {
+            total: 0,
+            publications: [],
+          },
+        });
+      }
+      await this.dataServices.publications.populateMediasAndColorsOptions(
+        result,
+      );
+      const total = result[0].total;
+      const publications = result.flatMap((r) => ({
+        ...r,
+        total: undefined,
+      }));
+      return succeed({
+        code: HttpStatus.OK,
+        data: {
+          total,
+          publications,
+        },
+      });
+    } catch (error) {
+      console.log({ error });
       throw new HttpException(
         ErrorMessages.ERROR_GETTING_DATA,
         HttpStatus.INTERNAL_SERVER_ERROR,
