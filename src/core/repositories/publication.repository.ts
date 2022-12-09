@@ -1,7 +1,10 @@
 /* eslint-disable prettier/prettier */
 
 import { Model, Types } from 'mongoose';
-import { IPublicationsListFilter } from 'src/publication/publication.helper';
+import {
+  IPublicationRankingFilter,
+  IPublicationsListFilter,
+} from 'src/publication/publication.helper';
 import { EReactionsType } from 'src/reactions/reactions.helpers';
 
 import { MongoGenericRepository } from '../abstracts/GR-mongo-generic-repository';
@@ -47,6 +50,26 @@ const PopulateUsersReactions = [
     select: '-_id code firstName lastName pseudo phone',
     model: 'User',
   },
+  {
+    path: 'records.user',
+    select: '-_id code firstName lastName pseudo phone',
+    model: 'User',
+  },
+];
+
+const PopulateExtraUsersReactions = [
+  {
+    path: 'likes',
+    select: '-_id -publication -__v',
+    populate: [
+      {
+        path: 'user',
+        select: '-_id code firstName lastName pseudo phone',
+        model: 'User',
+      },
+    ],
+  },
+
   {
     path: 'records.user',
     select: '-_id code firstName lastName pseudo phone',
@@ -562,6 +585,74 @@ export class PublicationRepository<T>
           },
         },
       )
+      .exec();
+  }
+
+  populateExtraReactionsOptions(value: any): Promise<any> {
+    return this._repository.populate(value, PopulateExtraUsersReactions);
+  }
+
+  getChallengeRanking(filter: IPublicationRankingFilter): Promise<any[]> {
+    return this._repository
+      .aggregate([
+        {
+          $match: {
+            type: filter.type,
+            isDeleted: false,
+            week: {
+              $in: filter.weeks,
+            },
+            year: filter.year,
+          },
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'user',
+            foreignField: '_id',
+            as: 'user',
+          },
+        },
+        {
+          $unwind: {
+            path: '$user',
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            code: 1,
+            type: 1,
+            week: 1,
+            month: 1,
+            year: 1,
+            createdAt: 1,
+            user: {
+              code: 1,
+              firstName: 1,
+              lastName: 1,
+              pseudo: 1,
+              profile_picture: 1,
+            },
+            likesCount: {
+              $cond: {
+                if: {
+                  $isArray: '$likes',
+                },
+                then: {
+                  $size: '$likes',
+                },
+                else: 0,
+              },
+            },
+          },
+        },
+        {
+          $sort: {
+            likesCount: -1,
+          },
+        },
+      ])
       .exec();
   }
 }

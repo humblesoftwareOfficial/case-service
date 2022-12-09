@@ -14,6 +14,7 @@ import {
   Validate,
 } from 'class-validator';
 import { CategoriesCodesValidator } from 'src/categories/categories.helper';
+import { ChallengeCodeValidator } from 'src/challenge/challenge.helper';
 import { ProductCodeValidator } from 'src/products/product.helper';
 import { EReactionsType } from 'src/reactions/reactions.helpers';
 import { SectionCodeValidator } from 'src/sections/section.helper';
@@ -50,6 +51,12 @@ export class NewPublicationDto {
   @IsNotEmpty({ message: 'User is required.' })
   @Validate(UserCodeValidator)
   user: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsNotEmpty({ message: 'User is required.' })
+  @Validate(ChallengeCodeValidator)
+  challenge: string;
 
   // @ApiProperty({ required: false })
   // @IsOptional({})
@@ -194,4 +201,21 @@ export class PublicationsListByReactionsDto extends PaginationDto {
   // @IsOptional()
   // @Validate(PublicationsCodesValidator)
   // ignorePublications: string[];
+}
+
+export class GetChallengeRankingDto {
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsArray({
+    message: 'weeks list must be a valid list of week number',
+  })
+  @IsNumber({}, { each: true})
+  weeks?: number[];
+
+  @ApiProperty({ required: false })
+  @IsNotEmpty({ message: 'quantity is required and must be a valid number.' })
+  @Type(() => Number)
+  @IsNumber()
+  @Min(1)
+  quantity: number;
 }

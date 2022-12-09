@@ -25,6 +25,8 @@ import { PublicationView, PublicationViewDocument } from '../../publication-view
 import { PublicationViewRepository } from '../repositories/publication-view.repository';
 import { Reactions, ReactionsDocument } from '../../reactions/reactions.entity';
 import { ReactionsRepository } from '../repositories/reactions.repository';
+import { ChallengeRepository } from '../repositories/challenge.repository';
+import { Challenge, ChallengeDocument } from '../../challenge/challenge.entity';
 
 @Injectable()
 export class MongoDataServices
@@ -39,6 +41,7 @@ export class MongoDataServices
   provisioning: ProvisioningRepository<StockProvisioning>;
   publicationView: PublicationViewRepository<PublicationView>;
   reactions: ReactionsRepository<Reactions>;
+  challenge: ChallengeRepository<Challenge>;
 
   constructor(
     @InjectModel(User.name)
@@ -62,6 +65,9 @@ export class MongoDataServices
 
     @InjectModel(Reactions.name)
     private reactionsepository: Model<ReactionsDocument | Reactions>,
+
+    @InjectModel(Challenge.name)
+    private challengeRepository: Model<ChallengeDocument | Challenge>,
   ) {}
 
   onApplicationBootstrap() {
@@ -87,5 +93,6 @@ export class MongoDataServices
     ]);
     this.publicationView = new PublicationViewRepository<PublicationView>(this.publicationViewRepository);
     this.reactions = new ReactionsRepository<Reactions>(this.reactionsepository);
+    this.challenge = new ChallengeRepository<Challenge>(this.challengeRepository);
   }
 }

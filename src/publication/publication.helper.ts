@@ -55,6 +55,14 @@ export interface IPublicationsListFilter {
   ignorePublications?: string[];
 }
 
+export interface IPublicationRankingFilter {
+  type?: EPublicationType;
+  weeks?: number[];
+  months?: number[];
+  year?: number;
+  user?: Types.ObjectId;
+}
+
 export interface IPublicationsListByReactionsFilter {
   skip: number;
   limit: number;

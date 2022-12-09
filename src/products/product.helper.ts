@@ -40,3 +40,9 @@ export interface IProductProvisioning {
   newStock: Stock;
   provisionId: Types.ObjectId;
 }
+
+export interface IPaginationFilter {
+  skip: number;
+  limit: number;
+  searchTerm?: string;
+}

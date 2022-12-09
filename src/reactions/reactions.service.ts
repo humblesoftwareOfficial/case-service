@@ -38,7 +38,7 @@ export class ReactionsService {
       }
       const publication = await this.dataServices.publications.findOne(
         value.publication,
-        'code user',
+        'code user likes',
       );
       if (!publication) {
         return fail({
@@ -105,6 +105,9 @@ export class ReactionsService {
         createdReaction['_id'],
         value.reactionType,
       );
+      await this.dataServices.publications.populateExtraReactionsOptions(
+        publication,
+      );
       //SEND NOTIFICATION TO PUBLICATION'USER
       return succeed({
         code: HttpStatus.OK,
@@ -113,6 +116,7 @@ export class ReactionsService {
           code: createdReaction.code,
           user: user.code,
           publication: publication.code,
+          likesBefore: publication.likes,
         },
       });
     } catch (error) {
@@ -135,7 +139,7 @@ export class ReactionsService {
       }
       const publication = await this.dataServices.publications.findOne(
         value.publication,
-        'code user',
+        'code user likes',
       );
       if (!publication) {
         return fail({
@@ -171,11 +175,15 @@ export class ReactionsService {
         reactionId: reaction['_id'],
         reactionType: reaction.type as EReactionsType,
       });
+      // await this.dataServices.publications.populateExtraReactionsOptions(
+      //   publication,
+      // );
       return succeed({
         code: HttpStatus.OK,
         message: 'Reaction deleted',
         data: {
           reaction: reaction.code,
+          // likesBefore: publication.likes,
         },
       });
     } catch (error) {
@@ -200,7 +208,7 @@ export class ReactionsService {
       }
       const publication = await this.dataServices.publications.findOne(
         value.publication,
-        'code user',
+        'code user likes',
       );
       if (!publication) {
         return fail({
@@ -230,11 +238,15 @@ export class ReactionsService {
         reactionId: result.data['_id'],
         reactionType: result.data.type as EReactionsType,
       });
+      await this.dataServices.publications.populateExtraReactionsOptions(
+        publication,
+      );
       return succeed({
         code: HttpStatus.OK,
         message: 'Reaction deleted',
         data: {
           reaction: result.data.code,
+          likesBefore: publication.likes,
         },
       });
     } catch (error) {

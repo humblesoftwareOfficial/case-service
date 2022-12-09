@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Result, succeed } from 'src/config/htt-response';
 import { IDataServices } from 'src/core/generics/data.services.abstract';

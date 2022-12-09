@@ -1,7 +1,6 @@
+/* eslint-disable prettier/prettier */
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
-
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -15,6 +14,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
 import { PublicationViewModule } from './publication-view/publication-view.module';
 import { ReactionsModule } from './reactions/reactions.module';
+import { ChallengeModule } from './challenge/challenge.module';
 
 @Module({
   imports: [
@@ -22,12 +22,6 @@ import { ReactionsModule } from './reactions/reactions.module';
       isGlobal: true, // no need to import into other modules:
       envFilePath: ['.env', `.${process.env.NODE_ENV}.env`],
     }),
-    // MongooseModule.forRootAsync({
-    //   useFactory: (configService: ConfigService) => ({
-    //     uri: configService.get<string>('DB_URL'),
-    //   }),
-    //   inject: [ConfigService],
-    // }),
     UsersModule,
     AuthModule,
     PublicationModule,
@@ -38,6 +32,7 @@ import { ReactionsModule } from './reactions/reactions.module';
     ProductsModule,
     PublicationViewModule,
     ReactionsModule,
+    ChallengeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

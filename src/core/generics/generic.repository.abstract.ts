@@ -1,10 +1,12 @@
 /* eslint-disable prettier/prettier */
 import { Types } from 'mongoose';
 import {
+  IPaginationFilter,
   IProductionListFilter,
   IProductProvisioning,
 } from 'src/products/product.helper';
 import {
+  IPublicationRankingFilter,
   IPublicationsListByReactionsFilter,
   IPublicationsListFilter,
 } from 'src/publication/publication.helper';
@@ -60,6 +62,7 @@ export abstract class IPublicationRepository<T> {
   ): Promise<T>;
   abstract getPublicationInfoByCode(code: string): Promise<T>;
   abstract getPublicationsList(filter: IPublicationsListFilter): Promise<any[]>;
+  abstract getChallengeRanking(filter: IPublicationRankingFilter): Promise<any[]>;
   abstract populateMediasAndColorsOptions(value: any): Promise<any>;
   abstract addNewView(code: string, viewId: Types.ObjectId): Promise<T>;
   abstract addNewReaction(
@@ -127,4 +130,9 @@ export abstract class IReactionsRepository<T> {
   abstract getPublicationsListByReactions(
     filter: IPublicationsListByReactionsFilter,
   ): Promise<any[]>;
+}
+
+export abstract class IChallengeRepository<T> {
+  abstract getChallengeInfosByCode(code: string): Promise<any>;
+  abstract getChallengeList(filter: IPaginationFilter): Promise<any[]>;
 }

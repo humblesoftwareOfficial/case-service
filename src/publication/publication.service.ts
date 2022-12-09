@@ -32,6 +32,24 @@ export class PublicationService {
           error: 'Not found resource',
         });
       }
+      let challenge = null;
+      if (value.challenge) {
+        challenge = await this.dataServices.challenge.findOne(value.challenge, '_id code isStillRunning');
+        if (!challenge) {
+          return fail({
+            code: HttpStatus.BAD_REQUEST,
+            message: 'Challenge not found',
+            error: 'Challenge not found',
+          })
+        }
+        if (!challenge.isStillRunning) {
+          return fail({
+            code: HttpStatus.BAD_REQUEST,
+            message: 'This challenge is closed',
+            error: 'Challenge closed',
+          })
+        }
+      }
       const creationDate = new Date();
       const publication = {
         code: codeGenerator('PUB'),
@@ -54,6 +72,7 @@ export class PublicationService {
         likes: [],
         comments: [],
         records: [],
+        associatedChallenge: challenge ? challenge['_id'] : null,
       };
       const createdPublication = await this.dataServices.publications.create(
         publication,
@@ -69,7 +88,7 @@ export class PublicationService {
         },
       });
     } catch (error) {
-      console.log({ error })
+      console.log({ error });
       throw new HttpException(
         `Error while creating new publication. Try again.`,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -133,7 +152,11 @@ export class PublicationService {
         }
       }
       if (value.categories?.length) {
-        const resultCategories = await this.dataServices.category.findAllByCodes(value.categories, '_id code');
+        const resultCategories =
+          await this.dataServices.category.findAllByCodes(
+            value.categories,
+            '_id code',
+          );
         categories = resultCategories.flatMap((c) => c['_id']);
       }
       const result = await this.dataServices.publications.getPublicationsList({
@@ -175,11 +198,16 @@ export class PublicationService {
     }
   }
 
-  async listByReactions(value: PublicationsListByReactionsDto): Promise<Result> {
+  async listByReactions(
+    value: PublicationsListByReactionsDto,
+  ): Promise<Result> {
     try {
       let users = [];
       if (value.users) {
-        users = await this.dataServices.users.findAllByCodes(value.users, '_id code');
+        users = await this.dataServices.users.findAllByCodes(
+          value.users,
+          '_id code',
+        );
         if (!users?.length) {
           return fail({
             code: HttpStatus.NOT_FOUND,
@@ -189,11 +217,12 @@ export class PublicationService {
         }
       }
       const skip = (value.page - 1) * value.limit;
-      const result = await this.dataServices.reactions.getPublicationsListByReactions({
-        ...value,
-        skip,
-        users: users.flatMap((u) => u['_id']),
-      });
+      const result =
+        await this.dataServices.reactions.getPublicationsListByReactions({
+          ...value,
+          skip,
+          users: users.flatMap((u) => u['_id']),
+        });
       if (!result?.length) {
         return succeed({
           code: HttpStatus.OK,
@@ -353,6 +382,7 @@ export class PublicationService {
         likes: [],
         comments: [],
         records: [],
+        associatedChallenge: null,
       };
       const createdPublication = await this.dataServices.publications.create(
         publication,
@@ -374,6 +404,17 @@ export class PublicationService {
     } catch (error) {
       throw new HttpException(
         `Error while creating new publication. Try again.`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async getChallengeRanking(value): Promise<Result> {
+    try {
+      return null;
+    } catch (error) {
+      throw new HttpException(
+        ErrorMessages.ERROR_GETTING_DATA,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -408,6 +449,4 @@ export class PublicationService {
       // console.log({ error });
     }
   }
-
-  //LIKE UNLIKE  PUBLICATION
 }

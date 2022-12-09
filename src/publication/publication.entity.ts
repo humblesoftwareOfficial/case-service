@@ -2,6 +2,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { Category } from 'src/categories/categories.entity';
+import { Challenge } from 'src/challenge/challenge.entity';
 import { EPublicationType } from 'src/core/entities/Publication';
 import { Media } from 'src/medias/medias.entity';
 import { Product } from 'src/products/products.entity';
@@ -72,6 +73,9 @@ export class Publication extends DefaultAttributes {
 
   @Prop({ type: [Types.ObjectId], ref: 'Reactions', default: []})
   records: Reactions[] | Types.ObjectId[];
+
+  @Prop({ type: Types.ObjectId, ref: 'Challenge', index: true })
+  associatedChallenge: Challenge | Types.ObjectId;
 }
 
 export const PublicationSchema = SchemaFactory.createForClass(Publication);

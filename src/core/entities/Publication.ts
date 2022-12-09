@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { CategoryEntity } from './Category';
+import { ChallengeEntity } from './Challenge';
 import { DefaultAttributesEntity } from './DefaultAttributes';
 import { MediaEntity } from './Media';
 import { ProductEntity } from './Product';
@@ -33,4 +34,5 @@ export class PublicationEntity extends DefaultAttributesEntity {
   views: PublicationViewEntity[];
   likes: ReactionsEntity[];
   comments: ReactionsEntity[];
+  associatedChallenge: ChallengeEntity;
 }

@@ -20,6 +20,8 @@ import { PublicationViewRepository } from '../repositories/publication-view.repo
 import { PublicationView } from '../../publication-view/publication-view.entity';
 import { ReactionsRepository } from '../repositories/reactions.repository';
 import { Reactions } from '../../reactions/reactions.entity';
+import { ChallengeRepository } from '../repositories/challenge.repository';
+import { Challenge } from 'src/challenge/challenge.entity';
 
 export abstract class IDataServices {
   abstract users: UserRepository<User | UserDocument>;
@@ -39,4 +41,6 @@ export abstract class IDataServices {
   abstract publicationView: PublicationViewRepository<PublicationView>;
 
   abstract reactions: ReactionsRepository<Reactions>;
+
+  abstract challenge: ChallengeRepository<Challenge>;
 }
