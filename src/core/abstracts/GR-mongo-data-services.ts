@@ -27,6 +27,8 @@ import { Reactions, ReactionsDocument } from '../../reactions/reactions.entity';
 import { ReactionsRepository } from '../repositories/reactions.repository';
 import { ChallengeRepository } from '../repositories/challenge.repository';
 import { Challenge, ChallengeDocument } from '../../challenge/challenge.entity';
+import { UserChatRepository } from '../repositories/user-chat.repository';
+import { UserChat, UserChatDocument } from 'src/user-chat/user-chat.entity';
 
 @Injectable()
 export class MongoDataServices
@@ -42,6 +44,8 @@ export class MongoDataServices
   publicationView: PublicationViewRepository<PublicationView>;
   reactions: ReactionsRepository<Reactions>;
   challenge: ChallengeRepository<Challenge>;
+
+  userChat: UserChatRepository<UserChat>;
 
   constructor(
     @InjectModel(User.name)
@@ -68,6 +72,9 @@ export class MongoDataServices
 
     @InjectModel(Challenge.name)
     private challengeRepository: Model<ChallengeDocument | Challenge>,
+
+    @InjectModel(UserChat.name)
+    private userChatRepository: Model<UserChatDocument | UserChat>,
   ) {}
 
   onApplicationBootstrap() {
@@ -94,5 +101,7 @@ export class MongoDataServices
     this.publicationView = new PublicationViewRepository<PublicationView>(this.publicationViewRepository);
     this.reactions = new ReactionsRepository<Reactions>(this.reactionsepository);
     this.challenge = new ChallengeRepository<Challenge>(this.challengeRepository);
+
+    this.userChat = new UserChatRepository<UserChat>(this.userChatRepository);
   }
 }

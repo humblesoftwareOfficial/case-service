@@ -22,6 +22,8 @@ import { ReactionsRepository } from '../repositories/reactions.repository';
 import { Reactions } from '../../reactions/reactions.entity';
 import { ChallengeRepository } from '../repositories/challenge.repository';
 import { Challenge } from 'src/challenge/challenge.entity';
+import { UserChatRepository } from '../repositories/user-chat.repository';
+import { UserChat, UserChatDocument } from 'src/user-chat/user-chat.entity';
 
 export abstract class IDataServices {
   abstract users: UserRepository<User | UserDocument>;
@@ -43,4 +45,6 @@ export abstract class IDataServices {
   abstract reactions: ReactionsRepository<Reactions>;
 
   abstract challenge: ChallengeRepository<Challenge>;
+
+  abstract userChat: UserChatRepository<UserChat | UserChatDocument>;
 }

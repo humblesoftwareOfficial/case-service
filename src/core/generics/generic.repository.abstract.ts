@@ -136,3 +136,5 @@ export abstract class IChallengeRepository<T> {
   abstract getChallengeInfosByCode(code: string): Promise<any>;
   abstract getChallengeList(filter: IPaginationFilter): Promise<any[]>;
 }
+
+export abstract class IUserChatRepository<T> {}

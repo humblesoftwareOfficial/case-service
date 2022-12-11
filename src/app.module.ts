@@ -15,6 +15,7 @@ import { ProductsModule } from './products/products.module';
 import { PublicationViewModule } from './publication-view/publication-view.module';
 import { ReactionsModule } from './reactions/reactions.module';
 import { ChallengeModule } from './challenge/challenge.module';
+import { UserChatModule } from './user-chat/user-chat.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ChallengeModule } from './challenge/challenge.module';
     PublicationViewModule,
     ReactionsModule,
     ChallengeModule,
+    UserChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

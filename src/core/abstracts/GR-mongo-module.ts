@@ -18,6 +18,7 @@ import { StockProvisioning, StockProvisioningSchema } from '../../products/stock
 import { PublicationView, PublicationViewSchema } from '../../publication-view/publication-view.entity';
 import { Reactions, ReactionsSchema } from '../../reactions/reactions.entity';
 import { Challenge, ChallengeSchema } from 'src/challenge/challenge.entity';
+import { UserChat, UserChatSchema } from 'src/user-chat/user-chat.entity';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { Challenge, ChallengeSchema } from 'src/challenge/challenge.entity';
       { name: PublicationView.name, schema: PublicationViewSchema },
       { name: Reactions.name, schema: ReactionsSchema },
       { name: Challenge.name, schema: ChallengeSchema },
+      { name: UserChat.name, schema: UserChatSchema },
     ]),
     // MongooseModule.forRoot(DATA_BASE_CONFIGURATION.mongoConnectionString),
     MongooseModule.forRootAsync({
