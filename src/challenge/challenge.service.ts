@@ -3,7 +3,12 @@ import { fail, Result, succeed } from 'src/config/htt-response';
 import { IDataServices } from 'src/core/generics/data.services.abstract';
 import { getWeekNumber } from 'src/shared/date.helpers';
 import { codeGenerator } from 'src/shared/utils';
-import { GiftDto, NewChallengeDto, UpdateChallengeDto } from './challenge.dto';
+import {
+  GetChallengeListDto,
+  GiftDto,
+  NewChallengeDto,
+  UpdateChallengeDto,
+} from './challenge.dto';
 import { Challenge } from './challenge.entity';
 
 @Injectable()
@@ -28,7 +33,7 @@ export class ChallengeService {
       });
     } catch (error) {
       throw new HttpException(
-        `Error while creating new challenge. Try again.`,
+        `Error while getting challenge infos. Try again.`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -153,6 +158,43 @@ export class ChallengeService {
     } catch (error) {
       throw new HttpException(
         `Error while updating challenge. Try again.`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async list(filter: GetChallengeListDto): Promise<Result> {
+    try {
+      const skip = (filter.page - 1) * filter.limit;
+      console.log({
+        ...filter,
+        skip,
+      });
+      const result = await this.dataServices.challenge.getChallengeList({
+        ...filter,
+        skip,
+      });
+      if (!result.length) {
+        return succeed({
+          code: HttpStatus.OK,
+          data: [],
+        });
+      }
+      const total = result[0].total;
+      const challenges = result.flatMap((r) => ({
+        ...r,
+        total: undefined,
+      }));
+      return succeed({
+        code: HttpStatus.OK,
+        data: {
+          challenges,
+          total,
+        },
+      });
+    } catch (error) {
+      throw new HttpException(
+        `Error while getting list of challenges. Try again.`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

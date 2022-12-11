@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Types } from 'mongoose';
+import { IChallengeListFilter } from 'src/challenge/challenge.helper';
 import {
-  IPaginationFilter,
   IProductionListFilter,
   IProductProvisioning,
 } from 'src/products/product.helper';
@@ -134,7 +134,7 @@ export abstract class IReactionsRepository<T> {
 
 export abstract class IChallengeRepository<T> {
   abstract getChallengeInfosByCode(code: string): Promise<any>;
-  abstract getChallengeList(filter: IPaginationFilter): Promise<any[]>;
+  abstract getChallengeList(filter: IChallengeListFilter): Promise<any[]>;
 }
 
 export abstract class IUserChatRepository<T> {}

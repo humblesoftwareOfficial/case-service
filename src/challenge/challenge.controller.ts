@@ -17,7 +17,11 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.gard';
 import { InvalidCodeException } from 'src/exceptions/invalicode.exception.filter';
-import { NewChallengeDto, UpdateChallengeDto } from './challenge.dto';
+import {
+  GetChallengeListDto,
+  NewChallengeDto,
+  UpdateChallengeDto,
+} from './challenge.dto';
 import { Challenge } from './challenge.entity';
 import { isValidChallengeCode } from './challenge.helper';
 import { ChallengeService } from './challenge.service';
@@ -27,6 +31,22 @@ import { ChallengeService } from './challenge.service';
 @Controller('challenge')
 export class ChallengeController {
   constructor(private service: ChallengeService) {}
+
+  @ApiOkResponse({
+    description: 'List of challenges.',
+    type: Challenge,
+    isArray: true,
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error occured.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request.',
+  })
+  @Post('/list')
+  async list(@Body() value: GetChallengeListDto) {
+    return this.service.list(value);
+  }
 
   @ApiCreatedResponse({
     description: 'New Challenge created.',

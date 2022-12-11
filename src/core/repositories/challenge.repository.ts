@@ -1,9 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Model } from 'mongoose';
-import {
-  IPaginationFilter,
-  IProductionListFilter,
-} from 'src/products/product.helper';
+import { IChallengeListFilter } from 'src/challenge/challenge.helper';
 import { MongoGenericRepository } from '../abstracts/GR-mongo-generic-repository';
 import { IChallengeRepository } from '../generics/generic.repository.abstract';
 
@@ -26,7 +23,7 @@ export class ChallengeRepository<T>
     super(repository, populateOnFind);
   }
 
-  getChallengeList(filter: IPaginationFilter): Promise<any[]> {
+  getChallengeList(filter: IChallengeListFilter): Promise<any[]> {
     return this._repository
       .aggregate([
         {
@@ -117,7 +114,7 @@ export class ChallengeRepository<T>
         },
         {
           $project: {
-            count: '$count.value',
+            total: '$count.value',
             code: '$data.code',
             label: '$data.label',
             description: '$data.description',

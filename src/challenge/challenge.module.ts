@@ -12,6 +12,6 @@ import { ChallengeService } from './challenge.service';
 })
 export class ChallengeModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(UserInterceptorMiddleware).forRoutes('/challenge');
+    // consumer.apply(UserInterceptorMiddleware).forRoutes('/challenge');
   }
 }

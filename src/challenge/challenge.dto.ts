@@ -1,7 +1,18 @@
 /* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, Min, Validate, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+  Validate,
+  ValidateNested,
+} from 'class-validator';
+import { PaginationDto } from 'src/shared/pagination.dto';
 import { UserCodeValidator } from 'src/users/users.helper';
 import { ChallengeCodeValidator } from './challenge.helper';
 
@@ -72,4 +83,11 @@ export class UpdateChallengeDto {
   @IsOptional({})
   @IsBoolean({ message: '' })
   isStillRunning: boolean;
+}
+
+export class GetChallengeListDto extends PaginationDto {
+  @ApiProperty({ required: false })
+  @IsOptional({})
+  @IsString()
+  searchTerm: string;
 }

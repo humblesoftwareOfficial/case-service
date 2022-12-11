@@ -20,3 +20,9 @@ export class ChallengeCodeValidator implements ValidatorConstraintInterface {
     return 'Invalid  Challenge code.';
   }
 }
+
+export interface IChallengeListFilter {
+  skip: number;
+  limit: number;
+  searchTerm?: string;
+}
