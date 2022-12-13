@@ -15,7 +15,8 @@ export enum EPublicationType {
   ADVERTISING = 'ADVERTISING',
   SALE_FROM_PRODUCT = 'SALE_FROM_PRODUCT',
   SERVICE = 'SERVICE',
-  CHALLENGE = "CHALLENGE"
+  CHALLENGE = "CHALLENGE",
+  STORY = "STORY"
 }
 export class PublicationEntity extends DefaultAttributesEntity {
   label: string;

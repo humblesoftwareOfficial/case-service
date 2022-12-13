@@ -90,4 +90,15 @@ export class GetChallengeListDto extends PaginationDto {
   @IsOptional({})
   @IsString()
   searchTerm: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional({})
+  @IsBoolean()
+  isStillRunning: boolean;
+}
+
+export class GetChallengeRankingDto {
+  @IsNotEmpty({ message: 'Challenge code is required!' })
+  @Validate(ChallengeCodeValidator)
+  challenge: string;
 }

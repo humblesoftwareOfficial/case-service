@@ -70,7 +70,7 @@ export class ChallengeService {
         code: codeGenerator('CHL'),
         createdAt: creationDate,
         lastUpdatedAt: creationDate,
-        isStillRunning: true,
+        isStillRunning: false,
         description: value.description,
         label: value.label,
         week: getWeekNumber(creationDate),
@@ -122,13 +122,13 @@ export class ChallengeService {
           error: 'Not found resource',
         });
       }
-      if (!challenge.isStillRunning) {
-        return fail({
-          code: HttpStatus.BAD_REQUEST,
-          message: `Cannot update this challenge. It's closed`,
-          error: 'Bad request',
-        });
-      }
+      // if (!challenge.isStillRunning) {
+      //   return fail({
+      //     code: HttpStatus.BAD_REQUEST,
+      //     message: `Cannot update this challenge. It's closed`,
+      //     error: 'Bad request',
+      //   });
+      // }
       if (value.gifts?.length) {
         const result = this.__checkGift(value.gifts);
         if (!result.success) {

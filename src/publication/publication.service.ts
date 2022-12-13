@@ -12,14 +12,13 @@ import { fail, Result, succeed } from '../config/htt-response';
 import { HttpStatus } from '@nestjs/common/enums';
 import { codeGenerator, ErrorMessages } from '../shared/utils';
 import { getWeekNumber } from '../shared/date.helpers';
-import { JwtService } from '@nestjs/jwt';
 import { Types } from 'mongoose';
+import { GetChallengeRankingDto } from 'src/challenge/challenge.dto';
 
 @Injectable()
 export class PublicationService {
   constructor(
     private dataServices: IDataServices,
-    private jwtService: JwtService,
   ) {}
 
   async create(value: NewPublicationDto): Promise<Result> {
@@ -409,7 +408,7 @@ export class PublicationService {
     }
   }
 
-  async getChallengeRanking(value): Promise<Result> {
+  async getChallengeRanking(value: GetChallengeRankingDto): Promise<Result> {
     try {
       return null;
     } catch (error) {

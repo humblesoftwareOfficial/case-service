@@ -42,6 +42,9 @@ export class ChallengeRepository<T>
                 },
               ],
             }),
+            ...(filter.isStillRunning !== null && filter.isStillRunning !== undefined && {
+              isStillRunning: filter.isStillRunning,
+            })
           },
         },
         {

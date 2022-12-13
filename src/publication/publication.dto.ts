@@ -202,20 +202,3 @@ export class PublicationsListByReactionsDto extends PaginationDto {
   // @Validate(PublicationsCodesValidator)
   // ignorePublications: string[];
 }
-
-export class GetChallengeRankingDto {
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsArray({
-    message: 'weeks list must be a valid list of week number',
-  })
-  @IsNumber({}, { each: true})
-  weeks?: number[];
-
-  @ApiProperty({ required: false })
-  @IsNotEmpty({ message: 'quantity is required and must be a valid number.' })
-  @Type(() => Number)
-  @IsNumber()
-  @Min(1)
-  quantity: number;
-}

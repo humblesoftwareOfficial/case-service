@@ -25,4 +25,5 @@ export interface IChallengeListFilter {
   skip: number;
   limit: number;
   searchTerm?: string;
+  isStillRunning?: boolean;
 }
