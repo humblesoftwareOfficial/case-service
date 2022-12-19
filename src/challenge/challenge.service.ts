@@ -5,6 +5,7 @@ import { getWeekNumber } from 'src/shared/date.helpers';
 import { codeGenerator } from 'src/shared/utils';
 import {
   GetChallengeListDto,
+  GetChallengeRankingDto,
   GiftDto,
   NewChallengeDto,
   UpdateChallengeDto,
@@ -195,6 +196,52 @@ export class ChallengeService {
     } catch (error) {
       throw new HttpException(
         `Error while getting list of challenges. Try again.`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async getChallengeRanking(filter: GetChallengeRankingDto): Promise<Result> {
+    try {
+      const challenge = await this.dataServices.challenge.findOne(
+        filter.challenge,
+        '_id code',
+      );
+      if (!challenge) {
+        return fail({
+          code: HttpStatus.NOT_FOUND,
+          message: `Challenge with code: ${filter.challenge} not found`,
+          error: 'Not found resource',
+        });
+      }
+      const skip = (filter.page - 1) * filter.limit;
+      const result = await this.dataServices.publications.getChallengeRanking({
+        challengeId: challenge['_id'],
+        skip,
+        limit: filter.limit,
+      });
+      console.log({ result });
+      if (!result?.length) {
+        return succeed({
+          code: HttpStatus.OK,
+          data: [],
+        });
+      }
+      const total = result[0].total;
+      const ranking = result.flatMap((r) => ({
+        ...r,
+        total: undefined,
+      }));
+      return succeed({
+        code: HttpStatus.OK,
+        data: {
+          total,
+          ranking,
+        },
+      });
+    } catch (error) {
+      throw new HttpException(
+        `Error while getting challenge ranking infos. Try again.`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

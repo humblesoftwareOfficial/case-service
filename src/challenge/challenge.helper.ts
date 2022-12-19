@@ -4,6 +4,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
+import { Types } from 'mongoose';
 
 export const isValidChallengeCode = (code: string) =>
   code && code.length === 23 && code.includes('CHL-');
@@ -26,4 +27,10 @@ export interface IChallengeListFilter {
   limit: number;
   searchTerm?: string;
   isStillRunning?: boolean;
+}
+
+export interface IChallengeRankingFilter {
+  challengeId: Types.ObjectId;
+  skip: number;
+  limit: number;
 }

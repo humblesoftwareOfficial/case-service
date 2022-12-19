@@ -13,7 +13,6 @@ import { HttpStatus } from '@nestjs/common/enums';
 import { codeGenerator, ErrorMessages } from '../shared/utils';
 import { getWeekNumber } from '../shared/date.helpers';
 import { Types } from 'mongoose';
-import { GetChallengeRankingDto } from 'src/challenge/challenge.dto';
 
 @Injectable()
 export class PublicationService {
@@ -158,12 +157,24 @@ export class PublicationService {
           );
         categories = resultCategories.flatMap((c) => c['_id']);
       }
+      let challenge = null;
+      if (value.challenge) {
+        challenge = await this.dataServices.challenge.findOne(value.challenge, '_id code');
+        if (!challenge) {
+          return fail({
+            code: HttpStatus.NOT_FOUND,
+            message: 'Challenge not found',
+            error: 'Not found resource!',
+          });
+        }
+      }
       const result = await this.dataServices.publications.getPublicationsList({
         ...value,
         skip,
         user: user ? user['_id'] : undefined,
         section: section ? section['_id'] : undefined,
         categories: categories?.length ? categories : [],
+        challenge: challenge ? challenge['_id'] : undefined,
       });
       if (!result?.length) {
         return succeed({
@@ -403,17 +414,6 @@ export class PublicationService {
     } catch (error) {
       throw new HttpException(
         `Error while creating new publication. Try again.`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  async getChallengeRanking(value: GetChallengeRankingDto): Promise<Result> {
-    try {
-      return null;
-    } catch (error) {
-      throw new HttpException(
-        ErrorMessages.ERROR_GETTING_DATA,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

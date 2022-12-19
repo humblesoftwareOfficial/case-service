@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Types } from 'mongoose';
-import { IChallengeListFilter } from 'src/challenge/challenge.helper';
+import { IChallengeListFilter, IChallengeRankingFilter } from 'src/challenge/challenge.helper';
 import {
   IProductionListFilter,
   IProductProvisioning,
@@ -62,7 +62,7 @@ export abstract class IPublicationRepository<T> {
   ): Promise<T>;
   abstract getPublicationInfoByCode(code: string): Promise<T>;
   abstract getPublicationsList(filter: IPublicationsListFilter): Promise<any[]>;
-  abstract getChallengeRanking(filter: IPublicationRankingFilter): Promise<any[]>;
+  abstract getChallengeRanking(filter: IChallengeRankingFilter): Promise<any[]>;
   abstract populateMediasAndColorsOptions(value: any): Promise<any>;
   abstract addNewView(code: string, viewId: Types.ObjectId): Promise<T>;
   abstract addNewReaction(

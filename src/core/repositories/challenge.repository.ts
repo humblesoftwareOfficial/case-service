@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
-import { Model } from 'mongoose';
-import { IChallengeListFilter } from 'src/challenge/challenge.helper';
+import { Model, Types } from 'mongoose';
+import { IChallengeListFilter, IChallengeRankingFilter } from 'src/challenge/challenge.helper';
 import { MongoGenericRepository } from '../abstracts/GR-mongo-generic-repository';
+import { EPublicationType } from '../entities/Publication';
 import { IChallengeRepository } from '../generics/generic.repository.abstract';
 
 const PopulateOptions = [
@@ -42,9 +43,10 @@ export class ChallengeRepository<T>
                 },
               ],
             }),
-            ...(filter.isStillRunning !== null && filter.isStillRunning !== undefined && {
-              isStillRunning: filter.isStillRunning,
-            })
+            ...(filter.isStillRunning !== null &&
+              filter.isStillRunning !== undefined && {
+                isStillRunning: filter.isStillRunning,
+              }),
           },
         },
         {
@@ -128,6 +130,7 @@ export class ChallengeRepository<T>
             week: '$data.week',
             month: '$data.month',
             year: '$data.year',
+            gifts: "$data.gifts",
             createdBy: {
               code: '$data.createdBy.code',
               firstName: '$data.createdBy.firstName',

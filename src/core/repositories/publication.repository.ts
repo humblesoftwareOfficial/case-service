@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 
 import { Model, Types } from 'mongoose';
+import { IChallengeRankingFilter } from 'src/challenge/challenge.helper';
 import {
   IPublicationRankingFilter,
   IPublicationsListFilter,
@@ -8,6 +9,7 @@ import {
 import { EReactionsType } from 'src/reactions/reactions.helpers';
 
 import { MongoGenericRepository } from '../abstracts/GR-mongo-generic-repository';
+import { EPublicationType } from '../entities/Publication';
 import { IPublicationRepository } from '../generics/generic.repository.abstract';
 
 const PopulateOptions = [
@@ -347,6 +349,9 @@ export class PublicationRepository<T>
                 $in: filter.categories,
               },
             }),
+            ...(filter.challenge && {
+              associatedChallenge: filter.challenge
+            })
           },
         },
         {
@@ -592,48 +597,29 @@ export class PublicationRepository<T>
     return this._repository.populate(value, PopulateExtraUsersReactions);
   }
 
-  getChallengeRanking(filter: IPublicationRankingFilter): Promise<any[]> {
+  getChallengeRanking(filter: IChallengeRankingFilter): Promise<any[]> {
     return this._repository
       .aggregate([
         {
           $match: {
-            type: filter.type,
             isDeleted: false,
-            week: {
-              $in: filter.weeks,
-            },
-            year: filter.year,
-          },
-        },
-        {
-          $lookup: {
-            from: 'users',
-            localField: 'user',
-            foreignField: '_id',
-            as: 'user',
-          },
-        },
-        {
-          $unwind: {
-            path: '$user',
+            associatedChallenge: filter.challengeId,
+            type: EPublicationType.CHALLENGE,
           },
         },
         {
           $project: {
             _id: 0,
             code: 1,
-            type: 1,
+            user: 1,
+            lastUpdatedAt: 1,
+            createdAt: 1,
             week: 1,
             month: 1,
             year: 1,
-            createdAt: 1,
-            user: {
-              code: 1,
-              firstName: 1,
-              lastName: 1,
-              pseudo: 1,
-              profile_picture: 1,
-            },
+            medias: 1,
+            type: 1,
+            likes: 1,
             likesCount: {
               $cond: {
                 if: {
@@ -652,7 +638,199 @@ export class PublicationRepository<T>
             likesCount: -1,
           },
         },
+        {
+          $facet: {
+            count: [
+              {
+                $group: {
+                  _id: null,
+                  value: {
+                    $sum: 1,
+                  },
+                },
+              },
+              {
+                $project: {
+                  _id: 0,
+                },
+              },
+            ],
+            data: [
+              {
+                $skip: filter.skip,
+              },
+              {
+                $limit: filter.limit,
+              },
+            ],
+          },
+        },
+        {
+          $unwind: {
+            path: '$count',
+          },
+        },
+        {
+          $unwind: {
+            path: '$data',
+          },
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'data.user',
+            foreignField: '_id',
+            as: 'data.user',
+          },
+        },
+        {
+          $lookup: {
+            from: 'media',
+            localField: 'data.medias',
+            foreignField: '_id',
+            as: 'data.medias',
+          },
+        },
+        {
+          $unwind: {
+            path: '$data.user',
+          },
+        },
+        {
+          $project: {
+            total: '$count.value',
+            code: '$data.code',
+            createdAt: '$data.createdAt',
+            lastUpdatedAt: '$data.lastUpdatedAt',
+            type: '$data.type',
+            week: '$data.week',
+            month: '$data.month',
+            year: '$data.year',
+            likesCount: '$data.likesCount',
+            user: {
+              code: '$data.user.code',
+              firstName: '$data.user.firstName',
+              lastName: '$data.user.lastName',
+              profile_picture: '$data.user.profile_picture',
+              phone: '$data.user.phone',
+              publications: {
+                $cond: {
+                  if: {
+                    $isArray: '$data.user.publications',
+                  },
+                  then: {
+                    $size: '$data.user.publications',
+                  },
+                  else: 0,
+                },
+              },
+              followers: {
+                $cond: {
+                  if: {
+                    $isArray: '$data.user.followers',
+                  },
+                  then: {
+                    $size: '$data.user.followers',
+                  },
+                  else: 0,
+                },
+              },
+              subscriptions: {
+                $cond: {
+                  if: {
+                    $isArray: '$data.user.subscriptions',
+                  },
+                  then: {
+                    $size: '$data.user.subscriptions',
+                  },
+                  else: 0,
+                },
+              },
+            },
+            medias: '$data.medias',
+          },
+        },
+        {
+          $project: {
+            'medias._id': 0,
+            'medias.entity': 0,
+            'medias.onModel': 0,
+            'medias.__v': 0,
+            'product._id': 0,
+            'product.__v': 0,
+            'product.publications': 0,
+            'product.user': 0,
+            'product.priceHistory': 0,
+            'likes._id': 0,
+            'likes.__v': 0,
+            'likes.publication': 0,
+          },
+        },
       ])
       .exec();
   }
+
+  // getChallengeRanking(filter: IPublicationRankingFilter): Promise<any[]> {
+  //   return this._repository
+  //     .aggregate([
+  //       {
+  //         $match: {
+  //           type: filter.type,
+  //           isDeleted: false,
+  //           week: {
+  //             $in: filter.weeks,
+  //           },
+  //           year: filter.year,
+  //         },
+  //       },
+  //       {
+  //         $lookup: {
+  //           from: 'users',
+  //           localField: 'user',
+  //           foreignField: '_id',
+  //           as: 'user',
+  //         },
+  //       },
+  //       {
+  //         $unwind: {
+  //           path: '$user',
+  //         },
+  //       },
+  //       {
+  //         $project: {
+  //           _id: 0,
+  //           code: 1,
+  //           type: 1,
+  //           week: 1,
+  //           month: 1,
+  //           year: 1,
+  //           createdAt: 1,
+  //           user: {
+  //             code: 1,
+  //             firstName: 1,
+  //             lastName: 1,
+  //             pseudo: 1,
+  //             profile_picture: 1,
+  //           },
+  //           likesCount: {
+  //             $cond: {
+  //               if: {
+  //                 $isArray: '$likes',
+  //               },
+  //               then: {
+  //                 $size: '$likes',
+  //               },
+  //               else: 0,
+  //             },
+  //           },
+  //         },
+  //       },
+  //       {
+  //         $sort: {
+  //           likesCount: -1,
+  //         },
+  //       },
+  //     ])
+  //     .exec();
+  // }
 }

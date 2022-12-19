@@ -97,7 +97,7 @@ export class GetChallengeListDto extends PaginationDto {
   isStillRunning: boolean;
 }
 
-export class GetChallengeRankingDto {
+export class GetChallengeRankingDto extends PaginationDto {
   @IsNotEmpty({ message: 'Challenge code is required!' })
   @Validate(ChallengeCodeValidator)
   challenge: string;

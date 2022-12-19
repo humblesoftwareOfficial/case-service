@@ -19,6 +19,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.gard';
 import { InvalidCodeException } from 'src/exceptions/invalicode.exception.filter';
 import {
   GetChallengeListDto,
+  GetChallengeRankingDto,
   NewChallengeDto,
   UpdateChallengeDto,
 } from './challenge.dto';
@@ -102,5 +103,21 @@ export class ChallengeController {
       throw new InvalidCodeException('Challenge code is incorrect!');
     }
     return this.service.update(code, value);
+  }
+
+  @ApiOkResponse({
+    description: 'List of challenges.',
+    type: Challenge,
+    isArray: true,
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error occured.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request.',
+  })
+  @Post('/ranking')
+  async getChallengeRanking(@Body() filter: GetChallengeRankingDto) {
+    return this.service.getChallengeRanking(filter);
   }
 }

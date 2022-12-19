@@ -53,6 +53,7 @@ export interface IPublicationsListFilter {
   searchTerm?: string;
   fromProduct?: boolean;
   ignorePublications?: string[];
+  challenge?: Types.ObjectId;
 }
 
 export interface IPublicationRankingFilter {

@@ -125,6 +125,12 @@ export class PublicationsListDto extends PaginationDto {
   @IsOptional()
   @Validate(CategoriesCodesValidator)
   categories: string[];
+
+  @ApiProperty({ required: false })
+  @IsOptional({})
+  @IsNotEmpty({ message: 'Challenge cannot be empty.' })
+  @Validate(ChallengeCodeValidator)
+  challenge: string;
 }
 
 export class UpdatePublicationDto {
