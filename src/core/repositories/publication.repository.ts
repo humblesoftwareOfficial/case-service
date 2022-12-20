@@ -1,12 +1,12 @@
 /* eslint-disable prettier/prettier */
 
 import { Model, Types } from 'mongoose';
-import { IChallengeRankingFilter } from 'src/challenge/challenge.helper';
+import { IChallengeRankingFilter } from '../../challenge/challenge.helper';
 import {
   IPublicationRankingFilter,
   IPublicationsListFilter,
-} from 'src/publication/publication.helper';
-import { EReactionsType } from 'src/reactions/reactions.helpers';
+} from '../../publication/publication.helper';
+import { EReactionsType } from '../../reactions/reactions.helpers';
 
 import { MongoGenericRepository } from '../abstracts/GR-mongo-generic-repository';
 import { EPublicationType } from '../entities/Publication';

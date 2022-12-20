@@ -12,8 +12,8 @@ import {
   Validate,
   ValidateNested,
 } from 'class-validator';
-import { PaginationDto } from 'src/shared/pagination.dto';
-import { UserCodeValidator } from 'src/users/users.helper';
+import { PaginationDto } from '../shared/pagination.dto';
+import { UserCodeValidator } from '../users/users.helper';
 import { ChallengeCodeValidator } from './challenge.helper';
 
 /* eslint-disable prettier/prettier */

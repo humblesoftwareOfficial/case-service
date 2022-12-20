@@ -1,15 +1,15 @@
 /* eslint-disable prettier/prettier */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { Category } from 'src/categories/categories.entity';
-import { Challenge } from 'src/challenge/challenge.entity';
-import { EPublicationType } from 'src/core/entities/Publication';
-import { Media } from 'src/medias/medias.entity';
-import { Product } from 'src/products/products.entity';
-import { PublicationView } from 'src/publication-view/publication-view.entity';
-import { Reactions } from 'src/reactions/reactions.entity';
-import { Section } from 'src/sections/sections.entity';
-import { User } from 'src/users/users.entity';
+import { Category } from '../categories/categories.entity';
+import { Challenge } from '../challenge/challenge.entity';
+import { EPublicationType } from '../core/entities/Publication';
+import { Media } from '../medias/medias.entity';
+import { Product } from '../products/products.entity';
+import { PublicationView } from '../publication-view/publication-view.entity';
+import { Reactions } from '../reactions/reactions.entity';
+import { Section } from '../sections/sections.entity';
+import { User } from '../users/users.entity';
 
 import { DefaultAttributes } from '../shared/default-collection-attributes.entity';
 

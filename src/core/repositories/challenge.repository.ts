@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Model, Types } from 'mongoose';
-import { IChallengeListFilter, IChallengeRankingFilter } from 'src/challenge/challenge.helper';
+import { IChallengeListFilter, IChallengeRankingFilter } from '../../challenge/challenge.helper';
 import { MongoGenericRepository } from '../abstracts/GR-mongo-generic-repository';
 import { EPublicationType } from '../entities/Publication';
 import { IChallengeRepository } from '../generics/generic.repository.abstract';

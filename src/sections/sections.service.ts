@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Result, succeed } from 'src/config/htt-response';
-import { IDataServices } from 'src/core/generics/data.services.abstract';
-import { codeGenerator, ErrorMessages } from 'src/shared/utils';
+import { Result, succeed } from '../config/htt-response';
+import { IDataServices } from '../core/generics/data.services.abstract';
+import { codeGenerator, ErrorMessages } from '../shared/utils';
 import { NewSectionDto } from './section.dto';
 import { Section } from './sections.entity';
 

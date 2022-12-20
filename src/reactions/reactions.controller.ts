@@ -5,7 +5,7 @@ import {
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.gard';
+import { JwtAuthGuard } from '../auth/jwt-auth.gard';
 import {
   NewReactionDto,
   RemoveLikeOrRecordDto,

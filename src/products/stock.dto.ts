@@ -2,7 +2,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsEnum, IsNumber, IsOptional, IsString, Validate } from 'class-validator';
-import { IsValidDate } from 'src/shared/date.helpers';
+import { IsValidDate } from '../shared/date.helpers';
 
 
 export class NewStockDto {

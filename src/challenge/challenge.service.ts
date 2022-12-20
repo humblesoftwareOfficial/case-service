@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { fail, Result, succeed } from 'src/config/htt-response';
-import { IDataServices } from 'src/core/generics/data.services.abstract';
-import { getWeekNumber } from 'src/shared/date.helpers';
-import { codeGenerator } from 'src/shared/utils';
+import { fail, Result, succeed } from '../config/htt-response';
+import { IDataServices } from '../core/generics/data.services.abstract';
+import { getWeekNumber } from '../shared/date.helpers';
+import { codeGenerator } from '../shared/utils';
 import {
   GetChallengeListDto,
   GetChallengeRankingDto,

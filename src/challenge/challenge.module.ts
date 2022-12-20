@@ -1,6 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { DataServicesModule } from 'src/core/abstracts/GR-data-services-module';
-import { UserInterceptorMiddleware } from 'src/middlewares/user-interceptor.middleware';
+import { DataServicesModule } from '../core/abstracts/GR-data-services-module';
+import { UserInterceptorMiddleware } from '../middlewares/user-interceptor.middleware';
 import { ChallengeController } from './challenge.controller';
 import { ChallengeService } from './challenge.service';
 

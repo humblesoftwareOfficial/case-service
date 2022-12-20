@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Model, Types } from 'mongoose';
-import { IProductionListFilter, IProductProvisioning } from 'src/products/product.helper';
+import { IProductionListFilter, IProductProvisioning } from '../../products/product.helper';
 import { MongoGenericRepository } from '../abstracts/GR-mongo-generic-repository';
 import { IProductRepository } from '../generics/generic.repository.abstract';
 

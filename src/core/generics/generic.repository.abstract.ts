@@ -1,16 +1,16 @@
 /* eslint-disable prettier/prettier */
 import { Types } from 'mongoose';
-import { IChallengeListFilter, IChallengeRankingFilter } from 'src/challenge/challenge.helper';
+import { IChallengeListFilter, IChallengeRankingFilter } from '../../challenge/challenge.helper';
 import {
   IProductionListFilter,
   IProductProvisioning,
-} from 'src/products/product.helper';
+} from '../../products/product.helper';
 import {
   IPublicationRankingFilter,
   IPublicationsListByReactionsFilter,
   IPublicationsListFilter,
-} from 'src/publication/publication.helper';
-import { EReactionsType } from 'src/reactions/reactions.helpers';
+} from '../../publication/publication.helper';
+import { EReactionsType } from '../../reactions/reactions.helpers';
 
 export abstract class IGenericRepository<T> {
   abstract findAll(ignoreAttributes: string): Promise<T[]>;

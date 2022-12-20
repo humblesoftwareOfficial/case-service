@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { EUserGender } from 'src/core/entities/User';
+import { EUserGender } from '../core/entities/User';
 
 import { Publication } from '../publication/publication.entity';
 import { DefaultAttributes } from '../shared/default-collection-attributes.entity';

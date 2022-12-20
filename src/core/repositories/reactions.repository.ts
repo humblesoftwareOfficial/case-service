@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Model, Types } from 'mongoose';
-import { IPublicationsListByReactionsFilter } from 'src/publication/publication.helper';
-import { EReactionsType } from 'src/reactions/reactions.helpers';
+import { IPublicationsListByReactionsFilter } from '../../publication/publication.helper';
+import { EReactionsType } from '../../reactions/reactions.helpers';
 import { MongoGenericRepository } from '../abstracts/GR-mongo-generic-repository';
 import { IReactionsRepository } from '../generics/generic.repository.abstract';
 

@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { fail, Result, succeed } from 'src/config/htt-response';
+import { fail, Result, succeed } from '../config/htt-response';
 
 import { IDataServices } from '../core/generics/data.services.abstract';
 import { ErrorMessages, codeGenerator } from '../shared/utils';

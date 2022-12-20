@@ -2,9 +2,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { EUserGender } from 'src/core/entities/User';
-import { IDataServices } from 'src/core/generics/data.services.abstract';
-import { sendMessage } from 'src/extras/send.sms';
+import { EUserGender } from '../core/entities/User';
+import { IDataServices } from '../core/generics/data.services.abstract';
+import { sendMessage } from '../extras/send.sms';
 
 import { fail, Result, succeed } from '../config/htt-response';
 import { codeGenerator, ErrorMessages, generateDefaultPassword } from '../shared/utils';

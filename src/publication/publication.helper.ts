@@ -2,7 +2,7 @@
 
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 import { Types } from 'mongoose';
-import { EReactionsType } from 'src/reactions/reactions.helpers';
+import { EReactionsType } from '../reactions/reactions.helpers';
 
 import { EPublicationType } from '../core/entities/Publication';
 

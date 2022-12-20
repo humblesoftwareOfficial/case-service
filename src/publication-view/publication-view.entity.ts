@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { Publication } from 'src/publication/publication.entity';
-import { DefaultAttributes } from 'src/shared/default-collection-attributes.entity';
-import { User } from 'src/users/users.entity';
+import { Publication } from '../publication/publication.entity';
+import { DefaultAttributes } from '../shared/default-collection-attributes.entity';
+import { User } from '../users/users.entity';
 
 export type PublicationViewDocument = PublicationView & Document;
 

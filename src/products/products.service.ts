@@ -1,10 +1,10 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Types } from 'mongoose';
-import { fail, Result, succeed } from 'src/config/htt-response';
-import { IDataServices } from 'src/core/generics/data.services.abstract';
-import { NewMediaDto } from 'src/medias/medias.dto';
-import { getWeekNumber, stringToDate } from 'src/shared/date.helpers';
-import { codeGenerator, ErrorMessages } from 'src/shared/utils';
+import { fail, Result, succeed } from '../config/htt-response';
+import { IDataServices } from '../core/generics/data.services.abstract';
+import { NewMediaDto } from '../medias/medias.dto';
+import { getWeekNumber, stringToDate } from '../shared/date.helpers';
+import { codeGenerator, ErrorMessages } from '../shared/utils';
 import {
   NewProductDto,
   ProductColorDto,

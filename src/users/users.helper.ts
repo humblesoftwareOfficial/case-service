@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
-import { User } from 'src/users/users.entity';
+import { User } from '../users/users.entity';
 
 export const isValidUserCode = (code: string) =>
   code && code.length === 23 && code.includes('USR-');

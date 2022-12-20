@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { EReactionsType } from 'src/reactions/reactions.helpers';
+import { EReactionsType } from '../../reactions/reactions.helpers';
 import { DefaultAttributesEntity } from './DefaultAttributes';
 import { PublicationEntity } from './Publication';
 import { UserEntity } from './User';

@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { EAccountType } from 'src/users/users.helper';
+import { EAccountType } from '../../users/users.helper';
 import { DefaultAttributesEntity } from './DefaultAttributes';
 import { PublicationEntity } from './Publication';
 

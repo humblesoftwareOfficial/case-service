@@ -1,12 +1,12 @@
 /* eslint-disable prettier/prettier */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { Category } from 'src/categories/categories.entity';
-// import { EProductType } from 'src/core/entities/Product';
-import { Media } from 'src/medias/medias.entity';
-import { Publication } from 'src/publication/publication.entity';
-import { Section } from 'src/sections/sections.entity';
-import { User } from 'src/users/users.entity';
+import { Category } from '../categories/categories.entity';
+// import { EProductType } from '../core/entities/Product';
+import { Media } from '../medias/medias.entity';
+import { Publication } from '../publication/publication.entity';
+import { Section } from '../sections/sections.entity';
+import { User } from '../users/users.entity';
 
 import { DefaultAttributes } from '../shared/default-collection-attributes.entity';
 import { PriceHistory } from './price-history.entity';

@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Prop, Schema } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { Media } from 'src/medias/medias.entity';
+import { Media } from '../medias/medias.entity';
 
 export type ProductColorDocument = ProductColor & Document;
 

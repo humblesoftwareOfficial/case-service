@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { DataServicesModule } from 'src/core/abstracts/GR-data-services-module';
+import { DataServicesModule } from '../core/abstracts/GR-data-services-module';
 import { UserChatController } from './user-chat.controller';
 import { UserChatService } from './user-chat.service';
 

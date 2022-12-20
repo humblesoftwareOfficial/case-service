@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, Validate } from 'class-validator';
-import { PublicationCodeValidator } from 'src/publication/publication.helper';
+import { PublicationCodeValidator } from '../publication/publication.helper';
 import { UserCodeValidator } from '../users/users.helper';
 
 export class NewPublicationViewDto {

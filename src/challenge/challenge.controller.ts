@@ -15,8 +15,8 @@ import {
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.gard';
-import { InvalidCodeException } from 'src/exceptions/invalicode.exception.filter';
+import { JwtAuthGuard } from '../auth/jwt-auth.gard';
+import { InvalidCodeException } from '../exceptions/invalicode.exception.filter';
 import {
   GetChallengeListDto,
   GetChallengeRankingDto,

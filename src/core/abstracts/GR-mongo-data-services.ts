@@ -17,7 +17,7 @@ import { Category, CategoryDocument } from '../../categories/categories.entity';
 import { Section, SectionDocument } from '../../sections/sections.entity';
 import { CategoryRepository } from '../repositories/category.repository';
 import { SectionRepository } from '../repositories/section.repository';
-import { Product, ProductDocument } from 'src/products/products.entity';
+import { Product, ProductDocument } from '../../products/products.entity';
 import { ProductRepository } from '../repositories/product.repository';
 import { ProvisioningRepository } from '../repositories/provisioning.repository';
 import { StockProvisioning, StockProvisioningDocument } from '../../products/stock-provisioning.entity';
@@ -28,7 +28,7 @@ import { ReactionsRepository } from '../repositories/reactions.repository';
 import { ChallengeRepository } from '../repositories/challenge.repository';
 import { Challenge, ChallengeDocument } from '../../challenge/challenge.entity';
 import { UserChatRepository } from '../repositories/user-chat.repository';
-import { UserChat, UserChatDocument } from 'src/user-chat/user-chat.entity';
+import { UserChat, UserChatDocument } from '../../user-chat/user-chat.entity';
 
 @Injectable()
 export class MongoDataServices

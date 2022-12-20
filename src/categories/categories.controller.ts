@@ -5,7 +5,7 @@ import {
   ApiInternalServerErrorResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.gard';
+import { JwtAuthGuard } from '../auth/jwt-auth.gard';
 import { AddTagsToCategoriesDto, NewCategoriyDto } from './categories.dto';
 import { Category } from './categories.entity';
 import { CategoriesService } from './categories.service';

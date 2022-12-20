@@ -7,7 +7,7 @@ import {
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.gard';
+import { JwtAuthGuard } from '../auth/jwt-auth.gard';
 import { NewSectionDto } from './section.dto';
 import { Section } from './sections.entity';
 import { SectionsService } from './sections.service';

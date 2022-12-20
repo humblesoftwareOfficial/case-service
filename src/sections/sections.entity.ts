@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { Category } from 'src/categories/categories.entity';
-import { Publication } from 'src/publication/publication.entity';
+import { Category } from '../categories/categories.entity';
+import { Publication } from '../publication/publication.entity';
 
 import { DefaultAttributes } from '../shared/default-collection-attributes.entity';
 

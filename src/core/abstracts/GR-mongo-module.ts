@@ -17,8 +17,8 @@ import { Product, ProductSchema } from '../../products/products.entity';
 import { StockProvisioning, StockProvisioningSchema } from '../../products/stock-provisioning.entity';
 import { PublicationView, PublicationViewSchema } from '../../publication-view/publication-view.entity';
 import { Reactions, ReactionsSchema } from '../../reactions/reactions.entity';
-import { Challenge, ChallengeSchema } from 'src/challenge/challenge.entity';
-import { UserChat, UserChatSchema } from 'src/user-chat/user-chat.entity';
+import { Challenge, ChallengeSchema } from '../../challenge/challenge.entity';
+import { UserChat, UserChatSchema } from '../../user-chat/user-chat.entity';
 
 @Module({
   imports: [

@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsOptional, IsString, Validate } from 'class-validator';
-import { PublicationCodeValidator } from 'src/publication/publication.helper';
-import { UserCodeValidator } from 'src/users/users.helper';
+import { PublicationCodeValidator } from '../publication/publication.helper';
+import { UserCodeValidator } from '../users/users.helper';
 import { EReactionsType, ReactionCodeValidator } from './reactions.helpers';
 
 export class NewReactionDto {

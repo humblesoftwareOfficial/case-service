@@ -2,9 +2,9 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
-import { fail, Result, succeed } from 'src/config/htt-response';
-import { IDataServices } from 'src/core/generics/data.services.abstract';
-import { codeGenerator, generateDefaultPassword } from 'src/shared/utils';
+import { fail, Result, succeed } from '../config/htt-response';
+import { IDataServices } from '../core/generics/data.services.abstract';
+import { codeGenerator, generateDefaultPassword } from '../shared/utils';
 import { NewUserChatDto } from './user-chat.dto';
 
 @Injectable()

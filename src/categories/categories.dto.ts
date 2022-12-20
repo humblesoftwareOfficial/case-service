@@ -3,7 +3,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsArray, IsNotEmpty, IsOptional, IsString, Validate, ValidateNested } from 'class-validator';
-import { SectionCodeValidator } from 'src/sections/section.helper';
+import { SectionCodeValidator } from '../sections/section.helper';
 import { CategoryCodeValidator } from './categories.helper';
 
 export class NewCategoriyDto {

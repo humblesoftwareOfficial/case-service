@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { EMediaType } from 'src/core/entities/Media';
+import { EMediaType } from '../core/entities/Media';
 
 import { getWeekNumber } from '../shared/date.helpers';
 import { codeGenerator } from '../shared/utils';

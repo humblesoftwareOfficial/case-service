@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { DataServicesModule } from 'src/core/abstracts/GR-data-services-module';
+import { DataServicesModule } from '../core/abstracts/GR-data-services-module';
 import { PublicationViewController } from './publication-view.controller';
 import { PublicationViewService } from './publication-view.service';
 

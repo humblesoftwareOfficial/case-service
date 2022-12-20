@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ReactionsService } from './reactions.service';
 import { ReactionsController } from './reactions.controller';
-import { DataServicesModule } from 'src/core/abstracts/GR-data-services-module';
+import { DataServicesModule } from '../core/abstracts/GR-data-services-module';
 
 @Module({
   providers: [ReactionsService],

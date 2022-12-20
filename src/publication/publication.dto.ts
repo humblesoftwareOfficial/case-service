@@ -13,12 +13,12 @@ import {
   Min,
   Validate,
 } from 'class-validator';
-import { CategoriesCodesValidator } from 'src/categories/categories.helper';
-import { ChallengeCodeValidator } from 'src/challenge/challenge.helper';
-import { ProductCodeValidator } from 'src/products/product.helper';
-import { EReactionsType } from 'src/reactions/reactions.helpers';
-import { SectionCodeValidator } from 'src/sections/section.helper';
-import { NotEmptyArrayValidator } from 'src/shared/array.helper';
+import { CategoriesCodesValidator } from '../categories/categories.helper';
+import { ChallengeCodeValidator } from '../challenge/challenge.helper';
+import { ProductCodeValidator } from '../products/product.helper';
+import { EReactionsType } from '../reactions/reactions.helpers';
+import { SectionCodeValidator } from '../sections/section.helper';
+import { NotEmptyArrayValidator } from '../shared/array.helper';
 
 import { EPublicationType } from '../core/entities/Publication';
 import { PaginationDto } from '../shared/pagination.dto';

@@ -14,13 +14,13 @@ import {
   Validate,
   ValidateNested,
 } from 'class-validator';
-import { CategoryCodeValidator } from 'src/categories/categories.helper';
-import { NewMediaDto } from 'src/medias/medias.dto';
-import { NotEmptyArrayValidator } from 'src/shared/array.helper';
-import { IsValidDate } from 'src/shared/date.helpers';
-import { PaginationDto } from 'src/shared/pagination.dto';
-import { URLValidator } from 'src/shared/url.helper';
-import { UserCodeValidator } from 'src/users/users.helper';
+import { CategoryCodeValidator } from '../categories/categories.helper';
+import { NewMediaDto } from '../medias/medias.dto';
+import { NotEmptyArrayValidator } from '../shared/array.helper';
+import { IsValidDate } from '../shared/date.helpers';
+import { PaginationDto } from '../shared/pagination.dto';
+import { URLValidator } from '../shared/url.helper';
+import { UserCodeValidator } from '../users/users.helper';
 import { ProductCodeValidator } from './product.helper';
 import { NewStockDto } from './stock.dto';
 

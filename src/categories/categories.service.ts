@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Result, succeed } from 'src/config/htt-response';
-import { IDataServices } from 'src/core/generics/data.services.abstract';
-import { Section } from 'src/sections/sections.entity';
-import { codeGenerator } from 'src/shared/utils';
+import { Result, succeed } from '../config/htt-response';
+import { IDataServices } from '../core/generics/data.services.abstract';
+import { Section } from '../sections/sections.entity';
+import { codeGenerator } from '../shared/utils';
 import { AddTagsToCategoriesDto, NewCategoriyDto } from './categories.dto';
 import { Category } from './categories.entity';
 

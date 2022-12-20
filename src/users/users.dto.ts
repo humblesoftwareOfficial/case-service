@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { IsArray, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, Validate } from 'class-validator';
-import { EUserGender } from 'src/core/entities/User';
+import { EUserGender } from '../core/entities/User';
 
 import { URLValidator } from '../shared/url.helper';
 import { EAccountType, UserCodeValidator } from './users.helper';
