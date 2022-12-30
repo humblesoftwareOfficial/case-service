@@ -1,9 +1,10 @@
+/* eslint-disable prettier/prettier */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { fail, Result, succeed } from '../config/htt-response';
 
 import { IDataServices } from '../core/generics/data.services.abstract';
 import { ErrorMessages, codeGenerator } from '../shared/utils';
-import { NewPublicationMediasDto } from './medias.dto';
+import { NewMediaViewDto, NewPublicationMediasDto } from './medias.dto';
 import { getWeekNumber } from '../shared/date.helpers';
 import { Publication } from '../publication/publication.entity';
 
@@ -58,6 +59,7 @@ export class MediasService {
         year: creationDate.getFullYear(),
         onModel: Publication.name,
         entity: publication['_id'],
+        views: [],
       }));
       const resultMedias = await this.dataServices.medias.insertMany(newMedias);
       const mediasId = resultMedias.flatMap((r) => r['_id']);
@@ -75,6 +77,50 @@ export class MediasService {
       console.log({ error });
       throw new HttpException(
         `Error while creating new media. Try again.`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async registerNewView(value: NewMediaViewDto): Promise<Result> {
+    try {
+      const user = await this.dataServices.users.findOne(value.user, 'code');
+      if (!user) {
+        return fail({
+          code: HttpStatus.NOT_FOUND,
+          message: 'User not found',
+          error: 'Not found resource',
+        });
+      }
+      const media = await this.dataServices.medias.findOne(
+        value.media,
+        'code',
+      );
+      if (!media) {
+        return fail({
+          code: HttpStatus.NOT_FOUND,
+          message: 'Media not found',
+          error: 'Not found resource',
+        });
+      }
+
+      await this.dataServices.medias.addNewView(
+        media.code,
+        user['_id'],
+      );
+      return succeed({
+        code: HttpStatus.OK,
+        data: {
+          user: user.code,
+          media: media.code,
+          viewed: true,
+        },
+        message: 'View registered',
+      });
+    } catch (error) {
+      console.log({ error });
+      throw new HttpException(
+        `Error while registering new view. Try again.`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

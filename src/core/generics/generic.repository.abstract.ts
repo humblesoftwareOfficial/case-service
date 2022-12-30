@@ -53,6 +53,8 @@ export abstract class IUserRepository<T> {
     idUser: Types.ObjectId,
     accountSubscribedId: Types.ObjectId,
   ): Promise<T>;
+
+  abstract populateAccountFollowersAndSubscriptions(value: any): Promise<any>;
 }
 
 export abstract class IPublicationRepository<T> {
@@ -79,6 +81,7 @@ export abstract class IPublicationRepository<T> {
 
 export abstract class IMediaRepository<T> {
   abstract insertMany(items: T[]): Promise<T[]>;
+  abstract addNewView(code: string, user: Types.ObjectId): Promise<T>;
 }
 export abstract class ISectionRepository<T> {
   abstract insertMany(items: T[]): Promise<T[]>;

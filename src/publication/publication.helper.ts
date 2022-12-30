@@ -54,6 +54,8 @@ export interface IPublicationsListFilter {
   fromProduct?: boolean;
   ignorePublications?: string[];
   challenge?: Types.ObjectId;
+  ignoreUsers?: string[];
+  targetUsers?: string[];
 }
 
 export interface IPublicationRankingFilter {

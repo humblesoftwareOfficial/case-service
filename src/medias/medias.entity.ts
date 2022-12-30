@@ -42,6 +42,9 @@ export class Media extends DefaultAttributes {
 
   @Prop({ required: true, type: Number })
   year: number;
+
+  @Prop({ type: [Types.ObjectId], ref: 'User', default: [] })
+  views: User[] | Types.ObjectId[];
 }
 
 export const MediaSchema = SchemaFactory.createForClass(Media);

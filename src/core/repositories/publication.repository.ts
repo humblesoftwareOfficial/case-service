@@ -15,7 +15,8 @@ import { IPublicationRepository } from '../generics/generic.repository.abstract'
 const PopulateOptions = [
   {
     path: 'user',
-    select: 'code firstName lastName phone -_id',
+    select:
+      '-_id code firstName lastName pseudo phone profile_picture_key profile_picture',
   },
   {
     path: 'medias',
@@ -49,12 +50,20 @@ const PopulateProductOptions = [
 const PopulateUsersReactions = [
   {
     path: 'likes.user',
-    select: '-_id code firstName lastName pseudo phone',
+    select:
+      '-_id code firstName lastName pseudo phone profile_picture_key profile_picture',
     model: 'User',
   },
   {
     path: 'records.user',
-    select: '-_id code firstName lastName pseudo phone',
+    select:
+      '-_id code firstName lastName pseudo phone profile_picture_key profile_picture',
+    model: 'User',
+  },
+  {
+    path: 'views.user',
+    select:
+      '-_id code firstName lastName pseudo phone profile_picture_key profile_picture',
     model: 'User',
   },
 ];
@@ -66,7 +75,8 @@ const PopulateExtraUsersReactions = [
     populate: [
       {
         path: 'user',
-        select: '-_id code firstName lastName pseudo phone',
+        select:
+          '-_id code firstName lastName pseudo phone profile_picture_key profile_picture',
         model: 'User',
       },
     ],
@@ -74,7 +84,17 @@ const PopulateExtraUsersReactions = [
 
   {
     path: 'records.user',
-    select: '-_id code firstName lastName pseudo phone',
+    select:
+      '-_id code firstName lastName pseudo phone profile_picture_key profile_picture',
+    model: 'User',
+  },
+];
+
+const PopulateMediaOptions = [
+  {
+    path: 'medias.views',
+    select:
+      '-_id code firstName lastName pseudo phone profile_picture_key profile_picture',
     model: 'User',
   },
 ];
@@ -350,8 +370,18 @@ export class PublicationRepository<T>
               },
             }),
             ...(filter.challenge && {
-              associatedChallenge: filter.challenge
-            })
+              associatedChallenge: filter.challenge,
+            }),
+            ...(filter.ignoreUsers?.length && {
+              user: {
+                $nin: filter.ignoreUsers,
+              },
+            }),
+            ...(filter.targetUsers?.length && {
+              user: {
+                $in: filter.targetUsers,
+              },
+            }),
           },
         },
         {
@@ -429,6 +459,14 @@ export class PublicationRepository<T>
           },
         },
         {
+          $lookup: {
+            from: 'publicationviews',
+            localField: 'data.views',
+            foreignField: '_id',
+            as: 'data.views',
+          },
+        },
+        {
           $unwind: {
             path: '$data.user',
           },
@@ -457,6 +495,7 @@ export class PublicationRepository<T>
               firstName: '$data.user.firstName',
               lastName: '$data.user.lastName',
               profile_picture: '$data.user.profile_picture',
+              profile_picture_key: '$data.user.profile_picture_key',
               phone: '$data.user.phone',
               pseudo: '$data.user.pseudo',
               publications: {
@@ -466,14 +505,14 @@ export class PublicationRepository<T>
                   else: 0,
                 },
               },
-              followers: {
+              followers_count: {
                 $cond: {
                   if: { $isArray: '$data.user.followers' },
                   then: { $size: '$data.user.followers' },
                   else: 0,
                 },
               },
-              subscriptions: {
+              subscriptions_count: {
                 $cond: {
                   if: { $isArray: '$data.user.subscriptions' },
                   then: { $size: '$data.user.subscriptions' },
@@ -495,6 +534,13 @@ export class PublicationRepository<T>
                 if: { $isArray: '$data.likes' },
                 then: { $size: '$data.likes' },
                 else: 0,
+              },
+            },
+            views: {
+              $cond: {
+                if: { $isArray: '$data.views' },
+                then: '$data.views',
+                else: [],
               },
             },
             viewsCount: {
@@ -519,7 +565,11 @@ export class PublicationRepository<T>
             'product.priceHistory': 0,
             'likes._id': 0,
             'likes.__v': 0,
+            'views._id': 0,
+            'views.__v': 0,
             'likes.publication': 0,
+            'views.publication': 0,
+            'views.publicationFrom': 0,
           },
         },
       ])
@@ -529,7 +579,7 @@ export class PublicationRepository<T>
   populateMediasAndColorsOptions(value: any): Promise<any> {
     return this._repository.populate(
       value,
-      PopulateProductOptions.concat(PopulateUsersReactions),
+      PopulateProductOptions.concat(PopulateUsersReactions, PopulateMediaOptions),
     );
   }
 
@@ -564,6 +614,9 @@ export class PublicationRepository<T>
             }),
             ...(type === EReactionsType.SAVE_PUBLICATION && {
               records: reactionId,
+            }),
+            ...(type === EReactionsType.VIEW && {
+              views: reactionId,
             }),
           },
         },
@@ -713,6 +766,7 @@ export class PublicationRepository<T>
               lastName: '$data.user.lastName',
               profile_picture: '$data.user.profile_picture',
               phone: '$data.user.phone',
+              pseudo: '$data.user.pseudo',
               publications: {
                 $cond: {
                   if: {

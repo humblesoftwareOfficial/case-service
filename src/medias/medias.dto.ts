@@ -13,6 +13,8 @@ import { NotEmptyArrayValidator } from '../shared/array.helper';
 import { Type } from 'class-transformer';
 import { EMediaType } from '../core/entities/Media';
 import { URLValidator } from '../shared/url.helper';
+import { UserCodeValidator } from 'src/users/users.helper';
+import { MediaCodeValidator } from './medias.helpers';
 
 export class NewMediaDto {
   @IsNotEmpty({ message: 'URL of media is required.' })
@@ -45,4 +47,14 @@ export class NewPublicationMediasDto {
   @ValidateNested({ each: true })
   @Type(() => NewMediaDto)
   medias: NewMediaDto[];
+}
+
+export class NewMediaViewDto {
+  @IsNotEmpty({ message: 'User is required.' })
+  @Validate(UserCodeValidator)
+  user: string;
+
+  @IsNotEmpty({ message: 'Media viewed is required.' })
+  @Validate(MediaCodeValidator)
+  media: string;
 }

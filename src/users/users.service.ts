@@ -18,6 +18,7 @@ export class UsersService {
 
   async findOne(code: string): Promise<Result> {
     try {
+      console.log('here')
       const user = await this.dataServices.users.getAccountInfos(
         code
       );
@@ -33,6 +34,7 @@ export class UsersService {
         data: user[0],
       });
     } catch (error) {
+      console.log({ error })
       throw new HttpException(
         ErrorMessages.ERROR_GETTING_DATA,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -55,6 +57,7 @@ export class UsersService {
         address: newUser.address,
         push_tokens: newUser.push_tokens || [],
         profile_picture: newUser.profile_picture || '',
+        profile_picture_key: codeGenerator('PPK'),
         createdAt: new Date(),
         lastUpdatedAt: new Date(),
         publications: [],
@@ -192,6 +195,7 @@ export class UsersService {
         }),
         ...(value.profile_picture && {
           profile_picture: value.profile_picture,
+          profile_picture_key: codeGenerator('PPK'),
         }),
         ...(value.pseudo && {
           pseudo: value.pseudo,
@@ -321,6 +325,19 @@ export class UsersService {
       throw new HttpException(
         'Error while updating account',
         HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async fastUpdateModel() {
+    const users = await this.dataServices.users.findAll('_id code');
+    for (let i = 0; i < users.length; i++) {
+      const update = {
+        profile_picture_key: codeGenerator('PPK')
+      };
+      const result = await this.dataServices.users.update(
+        users[i].code,
+        update,
       );
     }
   }

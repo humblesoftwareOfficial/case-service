@@ -2,6 +2,7 @@
 
 import { DefaultAttributesEntity } from './DefaultAttributes';
 import { PublicationEntity } from './Publication';
+import { UserEntity } from './User';
 
 export enum EMediaType {
   IMAGE = 'IMAGE',
@@ -19,4 +20,5 @@ export class MediaEntity extends DefaultAttributesEntity {
   week: number;
   month: number;
   year: number;
+  views?: UserEntity[];
 }

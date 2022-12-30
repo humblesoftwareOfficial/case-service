@@ -1,13 +1,16 @@
+/* eslint-disable prettier/prettier */
 import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { Media } from './medias.entity';
 import { MediasService } from './medias.service';
-import { NewPublicationMediasDto } from './medias.dto';
+import { NewMediaViewDto, NewPublicationMediasDto } from './medias.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.gard';
 
 @ApiTags('Medias')
@@ -30,5 +33,19 @@ export class MediasController {
   @Post('/publication/new')
   async create(@Body() value: NewPublicationMediasDto) {
     return this.service.createMediasForPublication(value);
+  }
+
+  @ApiOkResponse({
+    description: 'Register new view for media.',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error occured.',
+  })
+  @ApiNotFoundResponse({
+    description: 'Not found resource.',
+  })
+  @Post('/view')
+  async registerNewView(@Body() value: NewMediaViewDto) {
+    return this.service.registerNewView(value);
   }
 }

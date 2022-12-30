@@ -131,6 +131,16 @@ export class PublicationsListDto extends PaginationDto {
   @IsNotEmpty({ message: 'Challenge cannot be empty.' })
   @Validate(ChallengeCodeValidator)
   challenge: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Validate(UsersCodesValidator)
+  ignoreUsers: string[];
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Validate(UsersCodesValidator)
+  targetUsers: string[];
 }
 
 export class UpdatePublicationDto {

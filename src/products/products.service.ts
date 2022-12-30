@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { fail, Result, succeed } from '../config/htt-response';
@@ -367,6 +368,7 @@ export class ProductsService {
           year: creationDate.getFullYear(),
           onModel: Product.name,
           entity: productId,
+          views: [],
         };
         const result = await this.dataServices.medias.create(media);
         createdMedias.push({
@@ -401,6 +403,7 @@ export class ProductsService {
         year: creationDate.getFullYear(),
         onModel: Product.name,
         entity: productId,
+        views: [],
       };
       const result = await this.dataServices.medias.create(newMedia);
       createdMedias.push(result['_id']);

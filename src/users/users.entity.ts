@@ -41,6 +41,9 @@ export class User extends DefaultAttributes {
   @Prop({ type: String, default: '' })
   profile_picture: string;
 
+  @Prop({ type: String, default: '' })
+  profile_picture_key: string;
+
   @Prop({ type: [], default: [] })
   push_tokens: string[];
 
@@ -48,10 +51,10 @@ export class User extends DefaultAttributes {
   publications: Publication[];
 
   @Prop({ type: [Types.ObjectId], default: [], ref: 'User' })
-  followers: User[];
+  followers: User[];//abonnés
 
   @Prop({ type: [Types.ObjectId], default: [], ref: 'User' })
-  subscriptions: User[];
+  subscriptions: User[]; //abonnements
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

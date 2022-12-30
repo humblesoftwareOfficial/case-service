@@ -9,7 +9,7 @@ import {
   Publication,
   PublicationDocument,
 } from './../../publication/publication.entity';
-import { User } from './../../users/users.entity';
+import { User, UserDocument } from './../../users/users.entity';
 import { UserRepository } from '../repositories/user.repository';
 import { MediaRepository } from '../repositories/media.repository';
 import { PublicationRepository } from '../repositories/publication.repository';
@@ -49,7 +49,7 @@ export class MongoDataServices
 
   constructor(
     @InjectModel(User.name)
-    private userRepository: Model<User>,
+    private userRepository: Model<UserDocument | User>,
     @InjectModel(Publication.name)
     private publicationRepository: Model<PublicationDocument | Publication>,
     @InjectModel(Media.name)

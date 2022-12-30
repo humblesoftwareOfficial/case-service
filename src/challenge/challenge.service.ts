@@ -220,11 +220,13 @@ export class ChallengeService {
         skip,
         limit: filter.limit,
       });
-      console.log({ result });
       if (!result?.length) {
         return succeed({
           code: HttpStatus.OK,
-          data: [],
+          data: {
+            total: 0,
+            ranking: [],
+          },
         });
       }
       const total = result[0].total;

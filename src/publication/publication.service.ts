@@ -126,6 +126,8 @@ export class PublicationService {
       let user = null;
       let section = null;
       let categories = [];
+      let ignoreUsers = [];
+      let targetUsers = [];
       if (value.user) {
         user = await this.dataServices.users.findOne(value.user, '_id code');
         if (!user) {
@@ -135,6 +137,22 @@ export class PublicationService {
             error: 'Not found resource!',
           });
         }
+      }
+      if (value.targetUsers?.length) {
+        const resultTargetUsers =
+          await this.dataServices.users.findAllByCodes(
+            value.targetUsers,
+            '_id code',
+          );
+          targetUsers = resultTargetUsers.flatMap((c) => c['_id']);
+      }
+      if (value.ignoreUsers?.length) {
+        const resultIgnoreUsers =
+          await this.dataServices.users.findAllByCodes(
+            value.ignoreUsers,
+            '_id code',
+          );
+          ignoreUsers = resultIgnoreUsers.flatMap((c) => c['_id']);
       }
       if (value.section) {
         section = await this.dataServices.section.findOne(
@@ -175,6 +193,8 @@ export class PublicationService {
         section: section ? section['_id'] : undefined,
         categories: categories?.length ? categories : [],
         challenge: challenge ? challenge['_id'] : undefined,
+        targetUsers,
+        ignoreUsers
       });
       if (!result?.length) {
         return succeed({

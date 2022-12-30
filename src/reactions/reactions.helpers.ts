@@ -27,6 +27,7 @@ export enum EReactionsType {
   COMMENT = 'COMMENT',
   MESSAGE = 'MESSAGE',
   SAVE_PUBLICATION = 'SAVE_PUBLICATION',
+  VIEW = 'VIEW',
 }
 
 export const getCustomReactionTargetMessage = (value: EReactionsType) => {
