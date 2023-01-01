@@ -69,7 +69,6 @@ export class UserRepository<T>
   }
 
   getAccountInfos(code: string): Promise<any[]> {
-    console.log("rtttr")
     return this._repository
       .aggregate([
         {

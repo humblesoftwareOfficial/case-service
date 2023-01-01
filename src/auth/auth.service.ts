@@ -24,6 +24,7 @@ export class AuthService {
       })
     }
     const user = result.user;
+    console.log({ user })
     const payload = {
       userId: user['_id'],
       code: user.code,
@@ -39,14 +40,8 @@ export class AuthService {
 
   async validateUser(authDto: AuthDto) {
     const { email, password, phone } = authDto;
-    console.log({ phone });
-    console.log({ password });
     const user = await this.dataServices.users.authentification(phone);
     if (!user) {
-      // throw new HttpException(
-      //   `Authentication failed. Please check your login informations and try again`,
-      //   HttpStatus.BAD_REQUEST,
-      // );
       return {
         success: false,
         message: 'Account not found',
@@ -63,9 +58,15 @@ export class AuthService {
         user: null,
       }
     }
+    const userInfos = await this.dataServices.users.getAccountInfos(
+      user.code
+    );
     return {
       success: true,
-      user,
+      user: {
+        ...userInfos[0],
+        _id: user['_id'],
+      },
     };
   }
 
